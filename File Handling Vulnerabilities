@@ -144,9 +144,10 @@ Set proper file system permissions
 Restrict upload path access
 
 ✅ Summary Table
-Vulnerability	Description	Example Payload	Defense
-LFI	Read local server files	../../etc/passwd	Whitelist files, sanitize paths
-RFI	Include remote scripts	http://evil.com/shell.txt	Disable allow_url_include, whitelist includes
-Directory Traversal	Escape intended directories	../../admin/config.php	Canonical path checking, restrict input
-Unrestricted Upload	Upload arbitrary files	Upload shell.php, bypass extension check	MIME/type check, rename files, store outside web root
-File Overwrite	Replace critical files via upload	Upload index.php	Use random filenames, permission restrictions
+| Vulnerability           | Description                       | Example Payload                            | Defense                                               |
+| ----------------------- | --------------------------------- | ------------------------------------------ | ----------------------------------------------------- |
+| **LFI**                 | Read local server files           | `../../etc/passwd`                         | Whitelist files, sanitize paths                       |
+| **RFI**                 | Include remote scripts            | `http://evil.com/shell.txt`                | Disable `allow_url_include`, whitelist includes       |
+| **Directory Traversal** | Escape intended directories       | `../../admin/config.php`                   | Canonical path checking, restrict input               |
+| **Unrestricted Upload** | Upload arbitrary files            | Upload `shell.php`, bypass extension check | MIME/type check, rename files, store outside web root |
+| **File Overwrite**      | Replace critical files via upload | Upload `index.php`                         | Use random filenames, permission restrictions         |
