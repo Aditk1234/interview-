@@ -1,0 +1,172 @@
+🔐 1. Broken Authentication
+Q1. What is Broken Authentication?
+A: Broken Authentication occurs when flaws in session handling or credential management allow attackers to impersonate other users or bypass login.
+
+Q2. Common issues leading to Broken Authentication?
+A:
+
+Predictable or guessable session IDs
+
+Session ID not invalidated after logout
+
+Insecure password reset logic
+
+Lack of rate limiting or 2FA
+
+Poor session timeout management
+
+Q3. How to prevent Broken Authentication?
+A:
+
+Use strong, random session tokens
+
+Invalidate tokens on logout
+
+Enforce strong password policies
+
+Implement 2FA
+
+Set secure cookie flags: HttpOnly, Secure, SameSite
+
+🔐 2. Password Brute-Forcing
+Q4. What is Password Brute-Forcing?
+A: It’s the automated trial of multiple passwords (often using dictionaries or patterns) to guess a valid combination for login.
+
+Q5. Types of Brute-Force Attacks?
+A:
+
+Credential stuffing (using leaked credentials)
+
+Dictionary attacks
+
+Spraying (common password + many usernames)
+
+Q6. How to detect and mitigate brute-forcing?
+A:
+
+Rate limiting login attempts
+
+Captcha after failed attempts
+
+Account lockout or temporary delay
+
+Monitor logs for suspicious behavior
+
+Use 2FA
+
+🔐 3. Two-Factor Authentication (2FA) Bypass
+Q7. What is 2FA Bypass?
+A: Exploiting flaws in the 2FA flow (logic, endpoint, or misconfig) to bypass the second authentication step.
+
+Q8. Examples of 2FA Bypass?
+A:
+
+2FA not enforced after password reset
+
+OTP reuse or predictable OTPs
+
+Bypassing 2FA endpoint by replaying tokens
+
+Forcing logic flaws (e.g., skipping OTP step via Burp)
+
+Q9. How to protect against 2FA bypass?
+A:
+
+Enforce 2FA consistently across login paths
+
+Use time-based tokens (e.g., TOTP)
+
+Invalidate OTP after one use
+
+Ensure each 2FA step is properly validated on server-side
+
+🔐 4. Password Reset Poisoning
+Q10. What is Password Reset Poisoning?
+A: Manipulating the Host header in password reset requests to generate a malicious password reset link (e.g., pointing to attacker's domain).
+
+Q11. How does this work?
+A: If the app uses Host header without validation:
+
+http
+Copy
+Edit
+Host: attacker.com
+The reset link might look like:
+
+perl
+Copy
+Edit
+https://attacker.com/reset?token=abcd
+...which gets emailed to the victim.
+
+Q12. How to prevent Password Reset Poisoning?
+A:
+
+Don’t rely on the Host header to build URLs
+
+Use a fixed server-side base URL
+
+Validate Host against a whitelist
+
+🔐 5. User Enumeration
+Q13. What is User Enumeration?
+A: It’s the ability to determine valid usernames/emails by observing application behavior differences.
+
+Q14. How does User Enumeration occur?
+A:
+
+Different error messages:
+
+"User not found" vs. "Wrong password"
+
+Response time difference
+
+Email/SMS reset messages hinting user existence
+
+Q15. How to prevent User Enumeration?
+A:
+
+Use generic error messages:
+
+"Invalid username or password"
+
+Equal response timing
+
+Return same HTTP status regardless of input
+
+🔐 6. Account Lockout Vulnerabilities
+Q16. What is Account Lockout Vulnerability?
+A: Improper account lockout mechanisms can lead to:
+
+Denial-of-service (DoS) by locking out users
+
+Brute-force without triggering lockouts
+
+Q17. Exploitation scenarios?
+A:
+
+Trigger lockout on a victim account repeatedly
+
+Lock user account with just a few login failures (DoS)
+
+Bypass lockout by rotating IP or using multiple usernames
+
+Q18. How to handle Account Lockouts securely?
+A:
+
+Implement incremental delays after each failed login
+
+Allow lockouts only after consistent failures
+
+Alert users when lockouts occur
+
+Use CAPTCHA to verify real users
+
+🔐 Summary Table
+Vulnerability	Exploit Scenario	Mitigation
+Broken Authentication	Session fixation, weak login/session mgmt	Strong session handling, 2FA, secure cookies
+Password Brute-Forcing	Automated login attempts	Rate limit, CAPTCHA, 2FA, logging
+2FA Bypass	Skip/misuse of OTP step	Enforce flow, unique OTPs, server validation
+Password Reset Poisoning	Attacker gets victim's reset token	Fix base URLs, whitelist host headers
+User Enumeration	Info leak via error messages	Use generic messages and consistent responses
+Account Lockout Abuse	Locking victim accounts repeatedly	Delay instead of full lock, CAPTCHA
