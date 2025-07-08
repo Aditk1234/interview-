@@ -1,0 +1,245 @@
+✅ 1. Basic Questions
+1. What is SQL Injection?
+SQL Injection is a web security vulnerability that allows an attacker to interfere with the queries an application makes to its database. It allows unauthorized viewing/modification/deletion of database data.
+
+2. How does SQL Injection work?
+It works by injecting malicious SQL code into user input fields (e.g., login form) that is executed by the backend database due to improper input sanitization.
+
+3. What are the common causes of SQL Injection vulnerabilities?
+Concatenating user input directly in SQL queries.
+
+Lack of input validation.
+
+Not using parameterized queries.
+
+Weak error handling.
+
+4. What is the impact of a successful SQL Injection attack?
+Unauthorized data access (e.g., passwords, credit cards).
+
+Data deletion/modification.
+
+Bypassing authentication.
+
+Remote code execution (in some cases).
+
+Full server takeover (in rare, chained exploits).
+
+5. Which databases are commonly affected by SQLi?
+MySQL
+
+PostgreSQL
+
+Microsoft SQL Server
+
+Oracle
+
+SQLite
+
+✅ 2. Types of SQL Injection
+6. Different types of SQL Injection:
+In-band SQLi: Uses same channel to inject and retrieve data.
+
+Union-based: Extracts data using the UNION SELECT clause.
+
+Error-based: Relies on DB error messages to extract data.
+
+Blind SQLi: No error or visible output.
+
+Boolean-based: Uses true/false logic to infer data.
+
+Time-based: Uses delay (e.g., SLEEP()) to infer true/false.
+
+Out-of-band SQLi: Uses different channels (like DNS or HTTP) for data exfiltration.
+
+7. What is Blind SQL Injection?
+Blind SQLi occurs when the app doesn't return database output or errors, but the attacker can still infer data using logical responses (true/false) or time delays.
+
+8. Difference between In-band and Out-of-band SQLi:
+In-band: Data comes via the same channel (e.g., web response).
+
+Out-of-band: Data is exfiltrated via a different channel (e.g., DNS).
+
+9. What is Second Order SQL Injection?
+It's when malicious input is stored in the database and triggered later during a different SQL operation. E.g., user signs up with payload in their username, which executes when an admin views it.
+
+10. What is Boolean-based Blind SQL Injection?
+A technique where attackers send queries that return different results based on true/false conditions and infer database info from the app’s behavior (like response length or error presence).
+
+✅ 3. Detection & Exploitation
+11. How can you detect SQLi vulnerabilities?
+Injecting common payloads like ' OR '1'='1 and checking for unexpected results.
+
+Using tools like Burp Suite, sqlmap.
+
+Observing errors, login bypasses, or delays.
+
+12. What tools are used to detect SQLi?
+sqlmap
+
+Burp Suite (Scanner, Intruder)
+
+OWASP ZAP
+
+Manual fuzzing using payload lists
+
+13. Difference between automated and manual SQLi detection:
+Manual: Crafting and sending payloads, analyzing responses.
+
+Automated: Tools (e.g., sqlmap) test for all variations quickly and provide data extraction capabilities.
+
+14. How does sqlmap work?
+Sqlmap automates the detection and exploitation of SQL Injection vulnerabilities. It identifies the injection point, then maps out the database, and can extract data, read files, and even get OS access in some cases.
+
+15. How can you extract database names using SQL Injection?
+Using:
+
+sql
+Copy
+Edit
+UNION SELECT schema_name, null FROM information_schema.schemata
+or with sqlmap:
+
+bash
+Copy
+Edit
+sqlmap -u <url> --dbs
+16. How do you bypass WAF or filters during SQLi testing?
+Using URL encoding (%27, %20, etc.)
+
+Using case variations (UnIoN)
+
+Comment bypass (/**/)
+
+Using alternate syntax or stacked queries
+
+Time-based detection
+
+17. Common payloads for SQLi:
+sql
+Copy
+Edit
+' OR 1=1 --
+' UNION SELECT NULL, NULL --
+' AND SLEEP(5) --
+' AND 1=2 --
+admin' -- 
+' OR 'a'='a
+✅ 4. Real-world & Practical Questions
+18. Found SQLi in a pentest? (Example Answer)
+Yes. I found SQLi in a search field where input wasn’t sanitized. I injected ' OR 1=1 -- and was able to extract usernames using UNION SELECT queries via Burp Suite.
+
+19. How to test a login form for SQLi?
+Inject payloads like:
+
+sql
+Copy
+Edit
+' OR '1'='1 --
+' OR 1=1#
+in username/password fields to check if it bypasses authentication.
+
+20. Difference between OR 1=1-- and OR '1'='1' --:
+First is numeric logic, second is string-based.
+
+Use depends on whether the backend expects numbers or strings.
+
+21. Bypass authentication using SQL Injection:
+Injecting into username or password:
+
+sql
+Copy
+Edit
+admin' -- 
+' OR '1'='1' --
+If the application directly includes the input in the query, it might log the attacker in.
+
+22. Can SQL Injection lead to RCE?
+Yes, especially in MSSQL (xp_cmdshell) or if the database has file read/write permissions. You can also chain with LFI or file upload vulnerabilities.
+
+✅ 5. Prevention & Remediation
+23. How to prevent SQL Injection?
+Use parameterized queries / prepared statements.
+
+Apply strict input validation.
+
+Use ORMs.
+
+Avoid displaying detailed error messages.
+
+Use WAFs as an additional layer.
+
+24. What is a parameterized query / prepared statement?
+A way of writing SQL queries where user input is passed as parameters rather than embedded directly into the query. Example (PHP/MySQLi):
+
+php
+Copy
+Edit
+$stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+$stmt->bind_param("s", $user);
+25. What is input sanitization and validation?
+Sanitization: Cleaning user input (e.g., escaping special characters).
+Validation: Checking if input follows expected format/type.
+
+26. How do frameworks like Django, Laravel prevent SQLi?
+They use built-in ORMs that automatically sanitize inputs and use prepared statements by default.
+
+27. Why is using ORM safer than raw SQL?
+ORMs abstract SQL logic and enforce use of safe database queries—reducing chances of injections.
+
+28. How can Web Application Firewalls help?
+WAFs detect and block suspicious SQL-like input patterns and payloads in real time (e.g., 1=1, UNION, '--).
+
+29. Role of least privilege database accounts:
+Restricting DB accounts to minimal permissions limits damage even if SQLi occurs (e.g., no DROP, no GRANT).
+
+✅ 6. Advanced Questions
+30. What are stacked queries?
+Multiple queries separated by ;. E.g.,
+
+sql
+Copy
+Edit
+'; DROP TABLE users; --
+Only possible if the backend allows multiple statements in one query.
+
+31. Difference between GET and POST SQLi:
+GET: Input via URL query string.
+
+POST: Input in form body.
+
+Both can be vulnerable if input is not sanitized.
+
+32. How to exfiltrate large data via Blind SQLi?
+Using time-based or boolean-based queries in loops to extract one character at a time (e.g., SUBSTRING()).
+
+Example:
+
+sql
+Copy
+Edit
+IF(SUBSTRING((SELECT user()),1,1)='a',SLEEP(5),0)
+33. What is time-based blind SQLi?
+Uses delays to infer whether a condition is true:
+
+sql
+Copy
+Edit
+IF(1=1, SLEEP(5), 0)
+If the response is delayed, the condition is true.
+
+34. Difference between sleep() and benchmark() in SQLi?
+sleep(n): Delays execution for n seconds.
+
+benchmark(n,expr): Repeats expression n times—can cause CPU delay.
+Used in time-based SQLi to measure server response time.
+
+35. How do error messages help in SQLi?
+Error messages may reveal:
+
+Database type
+
+Table/column names
+
+Syntax errors
+If disabled, attacker must rely on blind techniques
