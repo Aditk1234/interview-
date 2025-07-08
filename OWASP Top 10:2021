@@ -1,0 +1,117 @@
+ A01:2021 – Broken Access Control
+Q1. What is Broken Access Control?
+A: When an application does not correctly enforce who can access which resources or perform which actions, allowing attackers to view or modify data beyond their privileges.
+
+Q2. Give an example and a mitigation.
+
+Example: A normal user hits /admin/delete-user?id=5 and succeeds.
+
+Mitigation: Enforce role‑based checks on every request server‑side; never rely solely on the UI.
+
+🔒 A02:2021 – Cryptographic Failures
+Q3. What constitutes a Cryptographic Failure?
+A: Use of weak or misconfigured cryptography—e.g., storing passwords in plain text, using deprecated algorithms like MD5, or failing to enforce HTTPS.
+
+Q4. How can you prevent these failures?
+
+Always use strong algorithms (e.g., SHA‑256+salt, AES‑GCM).
+
+Enforce TLS 1.2+ everywhere; disable HTTP.
+
+Manage keys securely (rotate, store in vaults).
+
+🛡 A03:2021 – Injection
+Q5. Define Injection vulnerabilities.
+A: Flaws that allow untrusted input to alter the intended execution of commands or queries (SQL, LDAP, OS, etc.), leading to data theft or code execution.
+
+Q6. Typical prevention strategies?
+
+Use parameterized queries/prepared statements.
+
+Validate and sanitize all inputs.
+
+Employ ORM or safe APIs.
+
+🏗 A04:2021 – Insecure Design
+Q7. What is Insecure Design?
+A: Missing or flawed security controls in the application’s architecture, leading to systemic weaknesses (e.g., no threat modeling, missing abuse‑case protections).
+
+Q8. How do you address it?
+
+Integrate threat modeling into design.
+
+Apply secure design principles (least privilege, fail‑safe defaults).
+
+Perform design reviews and red‑team exercises before coding.
+
+🔧 A05:2021 – Security Misconfiguration
+Q9. What are Security Misconfigurations?
+A: Default settings, incomplete configurations, or exposed debug endpoints that leave the app or infrastructure insecure (e.g., open S3 buckets, error pages, directory listings).
+
+Q10. How to mitigate?
+
+Harden servers and frameworks (disable unused features).
+
+Automate configuration checks (CIS Benchmarks).
+
+Remove default credentials and debug endpoints in production.
+
+📦 A06:2021 – Vulnerable and Outdated Components
+Q11. Why are outdated components dangerous?
+A: They may contain known vulnerabilities that attackers can exploit, especially when direct patches or updates are neglected.
+
+Q12. Best practices?
+
+Maintain an SBOM (Software Bill of Materials).
+
+Automate dependency scanning (e.g., Snyk, Dependabot).
+
+Regularly update and patch libraries, containers, and frameworks.
+
+👤 A07:2021 – Identification and Authentication Failures
+Q13. What failures occur here?
+A: Weak or missing controls around user identification and authentication—e.g., poor password policies, missing MFA, flawed session management.
+
+Q14. How do you defend?
+
+Enforce strong, adaptive MFA.
+
+Use secure session tokens, rotate on login.
+
+Implement account lockouts and monitoring on failed logins.
+
+🔄 A08:2021 – Software and Data Integrity Failures
+Q15. What does this category cover?
+A: When applications rely on untrusted or forged code/data—e.g., pulling updates over HTTP, deserializing unverified inputs, failing to verify package signatures.
+
+Q16. Mitigations?
+
+Sign and verify all software updates/packages.
+
+Avoid insecure deserialization (use safe formats).
+
+Enforce subresource integrity (SRI) on CDN‑hosted assets.
+
+📈 A09:2021 – Security Logging and Monitoring Failures
+Q17. Why is logging/monitoring vital?
+A: Without proper logs and alerting, attacks go undetected, impeding incident response and forensic investigations.
+
+Q18. How to implement effectively?
+
+Log all authentication, authorization, and data‑access events.
+
+Centralize logs (SIEM) and set up real‑time alerts for anomalies.
+
+Retain logs per compliance requirements.
+
+🌐 A10:2021 – Server-Side Request Forgery (SSRF)
+Q19. Define SSRF.
+A: When an attacker causes the server to send HTTP requests to arbitrary locations (internal or external) by abusing a URL‑fetch feature.
+
+Q20. How to prevent SSRF?
+
+Whitelist allowed domains and block internal/private IP ranges.
+
+Validate and canonicalize URLs; reject dangerous schemes.
+
+Implement network segmentation and egress filtering.
