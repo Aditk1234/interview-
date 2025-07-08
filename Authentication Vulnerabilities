@@ -163,10 +163,12 @@ Alert users when lockouts occur
 Use CAPTCHA to verify real users
 
 🔐 Summary Table
-Vulnerability	Exploit Scenario	Mitigation
-Broken Authentication	Session fixation, weak login/session mgmt	Strong session handling, 2FA, secure cookies
-Password Brute-Forcing	Automated login attempts	Rate limit, CAPTCHA, 2FA, logging
-2FA Bypass	Skip/misuse of OTP step	Enforce flow, unique OTPs, server validation
-Password Reset Poisoning	Attacker gets victim's reset token	Fix base URLs, whitelist host headers
-User Enumeration	Info leak via error messages	Use generic messages and consistent responses
-Account Lockout Abuse	Locking victim accounts repeatedly	Delay instead of full lock, CAPTCHA
+| Vulnerability            | Exploit Scenario                          | Mitigation                                    |
+| ------------------------ | ----------------------------------------- | --------------------------------------------- |
+| Broken Authentication    | Session fixation, weak login/session mgmt | Strong session handling, 2FA, secure cookies  |
+| Password Brute-Forcing   | Automated login attempts                  | Rate limit, CAPTCHA, 2FA, logging             |
+| 2FA Bypass               | Skip/misuse of OTP step                   | Enforce flow, unique OTPs, server validation  |
+| Password Reset Poisoning | Attacker gets victim's reset token        | Fix base URLs, whitelist host headers         |
+| User Enumeration         | Info leak via error messages              | Use generic messages and consistent responses |
+| Account Lockout Abuse    | Locking victim accounts repeatedly        | Delay instead of full lock, CAPTCHA           |
+
