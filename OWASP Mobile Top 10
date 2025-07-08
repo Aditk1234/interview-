@@ -1,0 +1,46 @@
+📱 OWASP Mobile Top 10 (2023/2016) – Android/iOS Pentesting Focus
+
+| #   | Category                      | Description                                                            |
+| --- | ----------------------------- | ---------------------------------------------------------------------- |
+| M1  | **Improper Credential Usage** | Hardcoded credentials, poor password policies, API keys in code.       |
+| M2  | **Insecure Data Storage**     | Sensitive data stored insecurely (e.g., in SharedPreferences, SQLite). |
+| M3  | **Insecure Communication**    | No HTTPS, weak SSL/TLS, lack of certificate pinning.                   |
+| M4  | **Insecure Authentication**   | Broken login logic, missing session timeout, no biometric checks.      |
+| M5  | **Insufficient Cryptography** | Weak encryption algorithms, poor key management.                       |
+| M6  | **Insecure Authorization**    | Access control issues, IDOR (Insecure Direct Object References).       |
+| M7  | **Client Code Quality**       | Bugs in client-side logic, dynamic code loading, runtime exceptions.   |
+| M8  | **Code Tampering**            | App modified or repackaged by attacker (without detection).            |
+| M9  | **Reverse Engineering**       | Decompiled APKs revealing business logic, secrets, API keys.           |
+| M10 | **Extraneous Functionality**  | Debugging interfaces or test code left in production builds.           |
+
+🌐 OWASP Top 10 – Web Applications (2021 Edition)
+| #   | Category                                 | Description                                                          |
+| --- | ---------------------------------------- | -------------------------------------------------------------------- |
+| A01 | **Broken Access Control**                | Bypassing access rules → IDOR, privilege escalation.                 |
+| A02 | **Cryptographic Failures**               | Weak encryption or no encryption → sensitive data leaks.             |
+| A03 | **Injection**                            | SQL, NoSQL, OS Command, LDAP injection vulnerabilities.              |
+| A04 | **Insecure Design**                      | Lack of secure architecture, threat modeling, or security by design. |
+| A05 | **Security Misconfiguration**            | Default credentials, unnecessary features, verbose error messages.   |
+| A06 | **Vulnerable and Outdated Components**   | Usage of outdated libraries, dependencies with known CVEs.           |
+| A07 | **Identification and Auth Failures**     | Broken login, session issues, missing MFA.                           |
+| A08 | **Software and Data Integrity Failures** | Insecure CI/CD, unsigned updates, tampering risks.                   |
+| A09 | **Security Logging and Monitoring**      | Missing/poor logs, undetected attacks.                               |
+| A10 | **Server-Side Request Forgery (SSRF)**   | Server fetches attacker-controlled URLs.                             |
+
+🌐 OWASP API Security Top 10 – 2023
+
+| #         | **Category**                                        | **Description**                                                            |
+| --------- | --------------------------------------------------- | -------------------------------------------------------------------------- |
+| **API1**  | **Broken Object Level Authorization**               | Missing access control → attackers access/modify others’ data (IDOR-like). |
+| **API2**  | **Broken Authentication**                           | Weak/missing authentication → account takeover, token reuse.               |
+| **API3**  | **Broken Object Property Level Authorization**      | Read/write to unauthorized object fields.                                  |
+| **API4**  | **Unrestricted Resource Consumption**               | No rate limiting → DoS, high compute usage, resource starvation.           |
+| **API5**  | **Broken Function Level Authorization**             | Insecure privilege checks on admin/user endpoints.                         |
+| **API6**  | **Unrestricted Access to Sensitive Business Flows** | Attackers abuse API workflows (e.g., bulk purchases, coupon abuse).        |
+| **API7**  | **Server Side Request Forgery (SSRF)**              | Server fetches malicious URLs → internal services exposed.                 |
+| **API8**  | **Security Misconfiguration**                       | Improper CORS, verbose errors, unsafe HTTP methods (e.g., PUT, TRACE).     |
+| **API9**  | **Improper Inventory Management**                   | Unknown/forgotten API versions, exposed staging/dev APIs.                  |
+| **API10** | **Unsafe Consumption of APIs**                      | Trusting external APIs blindly → injection, data leaks, or logic flaws.    |
+
+
+
