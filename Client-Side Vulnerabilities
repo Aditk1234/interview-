@@ -1,0 +1,187 @@
+DOM XSS
+
+DOM Clobbering
+
+Client-side template injection
+
+Prototype pollution
+
+Cross-site WebSocket hijacking
+
+💻 1. DOM-based XSS
+❓Q1. What is DOM-based XSS?
+A: DOM-based XSS occurs when untrusted user input is written to a DOM sink (e.g., innerHTML, document.write, etc.) without sanitization, allowing JavaScript execution in the browser.
+
+ChatGPT said:
+Here are complete interview questions and answers for advanced Client-Side Web Vulnerabilities, covering:
+
+💻 DOM-based XSS
+
+🧱 DOM Clobbering
+
+🧩 Client-side Template Injection (CSTI)
+
+🧬 Prototype Pollution
+
+🌐 Cross-site WebSocket Hijacking
+
+These issues are common in modern single-page apps (SPAs), especially those using JavaScript frameworks like React, Angular, Vue, or jQuery.
+
+💻 1. DOM-based XSS
+❓Q1. What is DOM-based XSS?
+A: DOM-based XSS occurs when untrusted user input is written to a DOM sink (e.g., innerHTML, document.write, etc.) without sanitization, allowing JavaScript execution in the browser.
+
+❓Q2. How is DOM XSS different from reflected/stored XSS?
+| Type          | Trigger Location                        |
+| ------------- | --------------------------------------- |
+| **Reflected** | Server-side renders script              |
+| **Stored**    | Payload saved in DB and rendered        |
+| **DOM**       | Executed entirely **in browser via JS** |
+
+
+
+Q3. Example of DOM XSS?
+Vulnerable JS code:
+
+js
+Copy
+Edit
+const user = location.hash.substring(1);
+document.getElementById("greeting").innerHTML = "Hello " + user;
+Exploit:
+
+php-template
+Copy
+Edit
+http://example.com/#<img src=x onerror=alert(1)>
+❓Q4. How to prevent DOM XSS?
+A:
+
+Avoid using unsafe sinks: innerHTML, eval, document.write
+
+Sanitize input using libraries like DOMPurify
+
+Use safer DOM APIs: textContent, setAttribute, etc.
+
+🧱 2. DOM Clobbering
+❓Q5. What is DOM Clobbering?
+A: DOM Clobbering is a browser quirk where an attacker overrides default DOM object properties or methods by injecting elements with specific name or id attributes.
+
+❓Q6. How does DOM Clobbering work?
+Example:
+
+html
+Copy
+Edit
+<form id="login">
+  <input name="action" value="evil">
+</form>
+
+<script>
+  login.action = '/login';
+</script>
+If login.action is expected to be a method, it now becomes the input field, breaking logic or leading to RCE.
+
+❓Q7. How to prevent DOM Clobbering?
+A:
+
+Don’t use unqualified global variables for DOM elements
+
+Always access DOM using document.getElementById() or querySelector()
+
+Sanitize name and id values in user input
+
+🧩 3. Client-side Template Injection (CSTI)
+❓Q8. What is Client-side Template Injection?
+A: CSTI occurs when user input is injected into a client-side templating engine (like Handlebars, Mustache, Angular) without proper sanitization, allowing arbitrary code execution.
+
+❓Q9. Example of CSTI?
+In AngularJS:
+
+html
+Copy
+Edit
+<div ng-bind-html="userInput"></div>
+With input:
+
+javascript
+Copy
+Edit
+{{constructor.constructor('alert(1)')()}}
+If sandbox is escaped, this results in XSS.
+
+❓Q10. How to prevent CSTI?
+A:
+
+Avoid rendering user input inside templates
+
+Use sandboxed templating engines
+
+Escape input properly and disable dangerous filters
+
+🧬 4. Prototype Pollution
+❓Q11. What is Prototype Pollution?
+A: A vulnerability where attacker-controlled input modifies the __proto__ or constructor prototype of base JavaScript objects, affecting all objects in the app.
+
+❓Q12. Why is it dangerous?
+A:
+
+Can overwrite logic
+
+Inject properties across all objects
+
+Can lead to XSS, DoS, or privilege escalation in Node.js apps
+
+❓Q13. Example?
+js
+Copy
+Edit
+let payload = { "__proto__": { "isAdmin": true } };
+Object.assign({}, payload);
+
+// Now any new object has isAdmin = true
+❓Q14. How to prevent it?
+A:
+
+Use deep cloning libraries with sanitization (e.g., lodash after v4.17.5)
+
+Disallow __proto__, constructor, prototype in input
+
+Validate object structure before merge
+
+🌐 5. Cross-site WebSocket Hijacking
+❓Q15. What is Cross-Site WebSocket Hijacking?
+A: It occurs when a website allows unauthenticated or cookie-authenticated WebSocket connections, and attackers can establish a WebSocket from another origin.
+
+❓Q16. Why is it dangerous?
+A:
+
+An attacker can:
+
+Read/write WebSocket messages as the victim
+
+Hijack chat systems, APIs, internal tools
+
+❓Q17. How to prevent WebSocket hijacking?
+A:
+
+Authenticate WebSocket handshakes on the server-side
+
+Implement origin checks on upgrade requests:
+
+js
+Copy
+Edit
+if (req.headers.origin !== 'https://yourdomain.com') reject();
+Use token-based authentication in WebSocket protocols
+
+
+
+| Vulnerability           | Description                                 | Impact                    | Prevention                                    |
+| ----------------------- | ------------------------------------------- | ------------------------- | --------------------------------------------- |
+| **DOM XSS**             | Unsafe DOM manipulation with user input     | XSS                       | Use safe sinks, sanitize input                |
+| **DOM Clobbering**      | Overwriting DOM properties via crafted HTML | Logic tampering, XSS      | Avoid global references, validate DOM         |
+| **CSTI**                | Code injection in client-side templates     | XSS, sandbox escape       | Escape input, avoid dynamic templates         |
+| **Prototype Pollution** | Altering object prototypes via user input   | Logic injection, RCE      | Block `__proto__`, use secure merge libraries |
+| **WebSocket Hijacking** | Cross-origin WebSocket hijack               | Session hijack, info leak | Authenticate handshake, validate origin       |
+
