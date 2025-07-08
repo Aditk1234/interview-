@@ -1,1 +1,121 @@
 
+ChatGPT said:
+Here are the interview questions and answers on Clickjacking vulnerabilities, covering:
+
+✅ Basic Clickjacking
+
+🎭 UI Redressing Attacks
+
+🔓 Frame-Busting Bypass
+
+These are commonly tested in VAPT interviews and are part of PortSwigger Academy’s client-side vulnerability category.
+
+🎯 1. Basic Clickjacking
+Q1. What is Clickjacking?
+A: Clickjacking is a UI redressing attack where an attacker tricks the user into clicking on something they didn’t intend to, usually by loading a target site in an invisible frame over a malicious page.
+
+Q2. How does Basic Clickjacking work?
+A: The attacker:
+
+Loads a sensitive target page (e.g., bank transfer form) in a hidden iframe.
+
+Places fake UI elements on top of it.
+
+Tricks the victim into clicking the attacker’s element, which actually clicks the hidden target.
+
+Q3. Example scenario?
+A: A victim is shown a “Click to win a prize!” button, but they actually click:
+
+html
+Copy
+Edit
+<iframe src="https://bank.com/transfer?to=attacker&amount=1000" style="opacity:0; position:absolute; top:0; left:0; z-index:999;"></iframe>
+Q4. How to prevent Clickjacking?
+A:
+
+Use anti-framing headers:
+
+X-Frame-Options: DENY or SAMEORIGIN
+
+Use Content-Security-Policy (CSP) frame-ancestors directive:
+
+http
+Copy
+Edit
+Content-Security-Policy: frame-ancestors 'none';
+Implement JavaScript frame busting (less reliable)
+
+🎭 2. UI Redressing Attacks
+Q5. What is UI Redressing?
+A: It’s a broader category of attacks (including clickjacking) where the attacker misleads the user about the interface, altering the perceived layout or behavior.
+
+Q6. Examples of UI Redressing?
+A:
+
+Invisible frames over legitimate buttons
+
+Drag-and-drop tricking users into uploading files
+
+Overlaying login/permission dialogs with misleading prompts
+
+Q7. Why is UI Redressing dangerous?
+A: It can be used to:
+
+Trick users into performing unauthorized actions
+
+Steal credentials (e.g., fake login over real page)
+
+Authorize access, e.g., to webcam/mic or bank transfers
+
+Q8. How to prevent UI redressing attacks?
+A:
+
+Use X-Frame-Options and frame-ancestors
+
+Avoid embedding sensitive UI in iframes
+
+Design UI with frame-aware indicators
+
+Ask users to confirm critical actions using CAPTCHA or re-authentication
+
+🔓 3. Frame-Busting Bypass
+Q9. What is Frame-Busting?
+A: A JavaScript technique that prevents a site from being loaded in an iframe:
+
+js
+Copy
+Edit
+if (top !== self) top.location = self.location;
+Q10. What is a Frame-Busting Bypass?
+A: Attackers can disable or bypass JavaScript-based frame-busting using:
+
+CSP restrictions on inline scripts
+
+Using sandboxed iframes
+
+Preventing JS execution in iframe context
+
+Q11. Why is frame-busting not reliable today?
+A:
+
+Can be disabled with sandbox attribute in HTML
+
+Not enforced if JavaScript is disabled or CSP blocks it
+
+Easy to bypass compared to header-based protections
+
+Q12. What is the modern solution?
+A: Use response headers like:
+
+http
+Copy
+Edit
+X-Frame-Options: DENY
+Content-Security-Policy: frame-ancestors 'none';
+They are enforced by the browser, not by JavaScript, and are harder to bypass.
+
+✅ Summary Table
+Attack Type	Description	Defense
+Clickjacking	Tricking clicks via hidden iframe	X-Frame-Options, CSP frame-ancestors, deny framing
+UI Redressing	Deceiving user perception of UI	Same defenses + strong visual indicators, double-check UI
+Frame-busting Bypass	Bypassing JavaScript protections	Use headers instead of/in addition to JS
