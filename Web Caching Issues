@@ -140,8 +140,10 @@ Sanitize untrusted inputs
 
 Avoid depending on non-key elements (like cookies) to render content
 
-✅ Summary Table
-Vulnerability	Description	Example Payload	Defense
-Web Cache Poisoning	Store malicious content in cache used by others	X-Host: evil.com	Sanitize headers, proper cache key handling
-Web Cache Deception	Trick cache into storing private pages	/profile/fake.jpg	No caching on auth pages, check paths/extensions
-Cache Key Exploitation	Cache key doesn’t include all user-controlled values	user=admin in URL, but not in cache key
+| Vulnerability          | Description                                          | Example Payload                           | Defense                                          |
+| ---------------------- | ---------------------------------------------------- | ----------------------------------------- | ------------------------------------------------ |
+| Web Cache Poisoning    | Store malicious content in cache used by others      | `X-Host: evil.com`                        | Sanitize headers, proper cache key handling      |
+| Web Cache Deception    | Trick cache into storing private pages               | `/profile/fake.jpg`                       | No caching on auth pages, check paths/extensions |
+| Cache Key Exploitation | Cache key doesn’t include all user-controlled values | `user=admin` in URL, but not in cache key | Include all relevant values in cache key         |
+
+
