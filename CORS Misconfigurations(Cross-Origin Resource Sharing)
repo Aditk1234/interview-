@@ -1,0 +1,118 @@
+ 1. What is CORS (Cross-Origin Resource Sharing)?
+Q1. Define CORS. Why does it exist?
+A: CORS is a browser security feature that controls cross-origin requests from JavaScript. It ensures a script from origin A (e.g., attacker.com) cannot access data from origin B (e.g., bank.com) unless explicitly allowed via CORS headers.
+
+🔍 2. CORS with Null Origin
+Q2. What is null origin in CORS?
+A: A null origin occurs when:
+
+A request is made from sandboxed iframes
+
+Files are loaded via file:// protocol
+
+Some extensions trigger null origin
+
+Q3. What happens if the server reflects Access-Control-Allow-Origin: null?
+A: The server is trusting requests from untrusted, ambiguous origins. An attacker could exploit this to:
+
+Load a malicious local file (via file://)
+
+Run cross-origin requests from sandboxed iframes
+
+Q4. How to mitigate null origin abuse?
+A:
+
+Never reflect null unless there's a validated, controlled use-case
+
+Use a whitelist of allowed origins
+
+Do not allow Access-Control-Allow-Credentials with null origin
+
+✳️ 3. Wildcard Origin with Credentials
+Q5. What is wrong with Access-Control-Allow-Origin: * and credentials?
+A: CORS does not allow credentials (like cookies, Authorization headers) to be sent with a wildcard (*) origin. But some misconfigured servers override this.
+
+Example:
+
+http
+Copy
+Edit
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+➡️ This is invalid and unsafe. Browsers may block it, but older implementations or misused libraries can allow it.
+
+Q6. Why is it dangerous?
+A: If allowed:
+
+Any origin can make authenticated cross-origin requests
+
+Cookies, tokens, or sensitive data may be leaked to attacker sites
+
+Q7. Secure way to handle credentials in CORS?
+A:
+
+Set a specific origin, not *
+
+http
+Copy
+Edit
+Access-Control-Allow-Origin: https://trusted.example.com
+Access-Control-Allow-Credentials: true
+Avoid using credentials unless absolutely necessary
+
+🕵️‍♂️ 4. CORS Misconfig Leading to Data Theft
+Q8. How can CORS misconfig allow data theft?
+A: If the server reflects attacker-controlled origins and allows credentials, the attacker can:
+
+Create a malicious site
+
+Use JavaScript to make authenticated requests to the victim’s account (via cookies)
+
+Read sensitive responses (bank info, PII, etc.)
+
+Q9. Real-world vulnerable example?
+http
+Copy
+Edit
+Origin: https://evil.com
+Response:
+Access-Control-Allow-Origin: https://evil.com
+Access-Control-Allow-Credentials: true
+This allows evil.com to:
+
+js
+Copy
+Edit
+fetch("https://bank.com/account", { credentials: "include" })
+.then(res => res.text())
+.then(data => exfiltrate(data));
+Q10. How to test for CORS misconfigurations?
+A:
+
+Use Burp Suite to modify the Origin header
+
+Test with:
+
+Origin: null
+
+Origin: https://evil.com
+
+Wildcards (*)
+
+Observe response for Access-Control-Allow-Origin and Access-Control-Allow-Credentials
+
+Q11. How to prevent CORS misconfig?
+A:
+
+Use a strict whitelist of allowed origins
+
+Do not allow credentials with *
+
+Avoid dynamically reflecting the Origin header without validation
+
+✅ Summary Table
+Misconfiguration Type	Risk	Fix
+Access-Control-Allow-Origin: null	Sandbox/file-based attacks	Block or validate null origin
+Access-Control-Allow-Origin: * + credentials	Full session hijack, PII exposure	Never allow * with credentials
+Reflecting arbitrary Origin header	Cross-origin access by attacker-controlled sites	Use strict allowlist of trusted origins
+Misusing credentials in CORS	Steals cookies/session tokens	Avoid Access-Control-Allow-Credentials if not needed
