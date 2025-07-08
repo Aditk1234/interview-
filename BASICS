@@ -1,0 +1,92 @@
+🌐 WEB SECURITY – BASIC Q&A
+🔸 Q1: What is SQL Injection (SQLi)?
+A: SQLi is a vulnerability where attackers inject malicious SQL queries into input fields to access or modify the database.
+
+🔸 Q2: What is XSS (Cross-Site Scripting)?
+A: XSS allows attackers to inject JavaScript into web pages, leading to session theft, defacement, or redirection.
+
+🔸 Q3: What is CSRF (Cross-Site Request Forgery)?
+A: Forces logged-in users to perform unwanted actions by exploiting their active sessions on other sites.
+
+🔸 Q4: What is IDOR?
+A: Insecure Direct Object Reference occurs when user input directly accesses internal objects (e.g., /user/123) without proper authorization checks.
+
+🔸 Q5: What is SSRF?
+A: Server-Side Request Forgery tricks the server into sending requests to internal or sensitive systems.
+
+🔸 Q6: What is Web Cache Poisoning?
+A: It manipulates cached HTTP responses to serve malicious content to users.
+
+🔸 Q7: What are Security Headers?
+A:
+
+Content-Security-Policy – blocks XSS
+
+X-Frame-Options – prevents clickjacking
+
+Strict-Transport-Security – enforces HTTPS
+
+🔗 API SECURITY – BASIC Q&A
+🔸 Q8: What is API Security Testing?
+A: It ensures APIs don’t expose sensitive data or functions, by testing endpoints, tokens, auth, and rate-limits.
+
+🔸 Q9: What is BOLA / IDOR in APIs?
+A: Broken Object Level Authorization allows users to access data by changing IDs in the URL or request body.
+
+🔸 Q10: What is Mass Assignment?
+A: When attackers set values for parameters (e.g., isAdmin: true) that should not be user-controlled.
+
+🔸 Q11: What is Excessive Data Exposure?
+A: When APIs return sensitive fields like passwords, internal IDs, or debug data in responses.
+
+🔸 Q12: What is a typical API testing toolset?
+A:
+
+Burp Suite
+
+Postman
+
+OWASP ZAP
+
+JWT Tool, ffuf, Hoppscotch
+
+📱 MOBILE SECURITY – BASIC Q&A (iOS/Android)
+🔸 Q13: What is Mobile VAPT?
+A: Mobile VAPT is the security assessment of mobile apps for flaws in local storage, communication, code, and APIs.
+
+🔸 Q14: What are common mobile vulnerabilities?
+A:
+
+Insecure storage (plaintext in plist, SharedPrefs)
+
+Insecure communication (no HTTPS)
+
+Weak authentication
+
+Debug info in production
+
+Hardcoded secrets
+
+🔸 Q15: What tools are used in mobile app pentesting?
+A:
+
+MobSF (static + dynamic)
+
+Frida, Objection (runtime testing)
+
+Burp Suite (API interception)
+
+Apktool, Ghidra, Hopper (reverse engineering)
+
+🔸 Q16: What is SSL Pinning?
+A: A security technique where an app only trusts a specific server certificate. Prevents MITM but must be bypassed for testing.
+
+🔸 Q17: What is Insecure Data Storage?
+A: When apps store sensitive data (like tokens or passwords) unencrypted in files, SQLite DBs, or shared prefs.
+
+✅ SUMMARY TABLE
+| Area   | Key Vulnerability                    | Description                              |
+| ------ | ------------------------------------ | ---------------------------------------- |
+| Web    | SQLi, XSS, CSRF, IDOR, SSRF          | Input or logic flaws in web apps         |
+| API    | BOLA, Mass Assignment, JWT issues    | ID tampering, over-permissioned APIs     |
+| Mobile | Insecure Storage, Pinning, Weak Auth | Sensitive data and poor crypto practices |
