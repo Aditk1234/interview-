@@ -137,8 +137,9 @@ Implement role-based access control on APIs
 Log unusual sequences or bypass attempts
 
 ✅ Summary Table
-Vulnerability	Description	Example	Fix
-Flawed Discount Logic	Misusing coupons or discounts repeatedly	Re-applying SAVE50 multiple times	Backend validation, coupon limits
-Insecure Workflow	Skipping critical steps	Direct access to /confirm-order without payment	Step-by-step session tracking
-Broken State Transitions	Jumping to unauthorized states	Changing account_verified: false → true	Strict state validation in backend
-Bypassing Logic Restrictions	Altering data to perform forbidden actions	price=1 in re
+| Vulnerability                | Description                                | Example                                           | Fix                                                |
+| ---------------------------- | ------------------------------------------ | ------------------------------------------------- | -------------------------------------------------- |
+| Flawed Discount Logic        | Misusing coupons or discounts repeatedly   | Re-applying `SAVE50` multiple times               | Backend validation, coupon limits                  |
+| Insecure Workflow            | Skipping critical steps                    | Direct access to `/confirm-order` without payment | Step-by-step session tracking                      |
+| Broken State Transitions     | Jumping to unauthorized states             | Changing `account_verified: false → true`         | Strict state validation in backend                 |
+| Bypassing Logic Restrictions | Altering data to perform forbidden actions | `price=1` in request for \$100 item               | Never trust client input, verify logic server-side |
