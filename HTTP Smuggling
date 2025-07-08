@@ -1,0 +1,140 @@
+ 13. HTTP Smuggling
+CL.TE / TE.CL attacks
+
+Request smuggling via obfuscated headers
+
+Bypassing front-end/back-end filters
+
+
+
+🔀 1. CL.TE / TE.CL Attacks
+❓Q1. What is HTTP Request Smuggling?
+A: HTTP Request Smuggling is a vulnerability that occurs when there is a mismatch in how the front-end (proxy/load balancer) and back-end server parse HTTP request boundaries, allowing an attacker to smuggle an extra hidden request inside a valid one.
+
+❓Q2. What does CL.TE and TE.CL mean?
+A:
+
+Term	Meaning
+CL.TE	Front-end uses Content-Length and back-end uses Transfer-Encoding
+TE.CL	Front-end uses Transfer-Encoding, back-end uses Content-Length
+
+The mismatch is exploited to desync the request parsing.
+
+❓Q3. How does a CL.TE smuggling attack work?
+A: Example:
+
+http
+Copy
+Edit
+POST / HTTP/1.1
+Host: vulnerable.com
+Content-Length: 13
+Transfer-Encoding: chunked
+
+0
+
+G
+Front-end sees Content-Length: 13 and sends 0\nG as one request.
+
+Back-end reads Transfer-Encoding: chunked and interprets the next request as starting from G.
+
+➡ Attacker injects a smuggled request that is processed before a legitimate user's request.
+
+❓Q4. Real-world impact of CL.TE / TE.CL?
+A: Attackers can:
+
+Bypass authentication (by smuggling unauthorized requests)
+
+Hijack sessions
+
+Perform cache poisoning
+
+Trigger XSS/CSRF using internal requests
+
+❓Q5. How do you detect HTTP Smuggling?
+A:
+
+Use Burp Suite’s "HTTP Request Smuggler" extension
+
+Observe:
+
+Request delay patterns
+
+Double responses
+
+Backend errors
+
+Try desync payloads with both Content-Length and Transfer-Encoding in the same request
+
+🧩 2. Request Smuggling via Obfuscated Headers
+❓Q6. What are obfuscated headers?
+A: Using non-standard variations of Transfer-Encoding or Content-Length headers to confuse or bypass one server but not the other.
+
+❓Q7. Examples of obfuscation?
+Transfer-Encoding : chunked (extra space)
+
+Transfer-Encoding\t:\tchunked (tab character)
+
+Duplicating headers:
+
+makefile
+Copy
+Edit
+Transfer-Encoding: chunked
+Transfer-Encoding: not-chunked
+❓Q8. Why do these work?
+A: One server might parse the first header, the other the last — leading to parsing differences, especially when they follow different RFCs or implementations.
+
+🎭 3. Bypassing Front-End / Back-End Filters
+❓Q9. How can smuggling be used to bypass security filters?
+A:
+
+The front-end proxy (e.g., NGINX) may sanitize or block malicious content
+
+The smuggled request bypasses the front-end and is parsed only by the back-end (e.g., Apache), which executes it
+
+Example:
+Attacker sends:
+
+h
+Copy
+Edit
+POST / HTTP/1.1
+Host: site.com
+Content-Length: 4
+Transfer-Encoding: chunked
+
+G
+The front-end sees this as a harmless request, but the back-end sees a separate malicious request appended to it.
+
+❓Q10. What are the defenses against HTTP Request Smuggling?
+A:
+
+Patch and update all HTTP parsers (e.g., reverse proxies like HAProxy, NGINX)
+
+Enforce consistent parsing behavior across proxy and back-end
+
+Disallow both Content-Length and Transfer-Encoding in the same request
+
+Reject malformed headers and obfuscated input
+
+❓Q11. How to test this in a VAPT?
+A:
+
+Use Burp Suite’s HTTP Request Smuggler
+
+Test all endpoints behind load balancers or proxies
+
+Try injecting a smuggled GET /admin inside a POST request
+
+Analyze time delays or unexpected responses
+
+
+| Technique                | Description                                        | Example Behavior                      | Mitigation                                             |
+| ------------------------ | -------------------------------------------------- | ------------------------------------- | ------------------------------------------------------ |
+| `CL.TE`                  | Front-end trusts `CL`, back-end trusts `TE`        | Hidden request smuggled into back-end | Normalize header parsing, reject dual headers          |
+| `TE.CL`                  | Front-end trusts `TE`, back-end trusts `CL`        | Extra data is parsed as new request   | Reject `CL+TE` pairs, update libraries                 |
+| Obfuscated headers       | Modified `Transfer-Encoding` to bypass detection   | Confuses only one server              | Strict header parsing rules                            |
+| Filter bypass via desync | Front-end blocks request, but back-end executes it | Bypass auth or WAF                    | Enforce consistent input validation across all servers |
+
+
