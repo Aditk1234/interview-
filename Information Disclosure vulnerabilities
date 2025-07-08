@@ -162,8 +162,9 @@ Implement a global error handler
 Avoid exposing internal logic or tech stack
 
 ✅ Summary Table
-Issue Type	Risk	Example	Fix
-Sensitive data in URL	Leaked via logs, referers, bookmarks	?token=xyz123	Use POST, avoid sensitive query params
-Debug info exposed	Reveals backend logic, technologies, file paths	Java/PHP stack trace	Disable debug in production, sanitize error responses
-Version/banner disclosure	Helps targeted attacks using version-specific exploits	Server: nginx/1.14.0	Hide server headers, remove comments/version tags
-Error message leaks	May expose internal files, SQL, credentials	SQL error near 'SELECT *'	Show generic error, log securely
+| Issue Type                | Risk                                                   | Example                     | Fix                                                   |
+| ------------------------- | ------------------------------------------------------ | --------------------------- | ----------------------------------------------------- |
+| Sensitive data in URL     | Leaked via logs, referers, bookmarks                   | `?token=xyz123`             | Use POST, avoid sensitive query params                |
+| Debug info exposed        | Reveals backend logic, technologies, file paths        | Java/PHP stack trace        | Disable debug in production, sanitize error responses |
+| Version/banner disclosure | Helps targeted attacks using version-specific exploits | `Server: nginx/1.14.0`      | Hide server headers, remove comments/version tags     |
+| Error message leaks       | May expose internal files, SQL, credentials            | `SQL error near 'SELECT *'` | Show generic error, log securely                      |
