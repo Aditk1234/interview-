@@ -1,0 +1,160 @@
+. JWT Signature Verification Bypass
+Q1. What is a JWT?
+A: JSON Web Token (JWT) is a compact, URL-safe token format used for user authentication and authorization. It consists of:
+
+Header
+
+Payload
+
+Signature
+Encoded as:
+
+scss
+Copy
+Edit
+<base64(header)>.<base64(payload)>.<signature>
+Q2. What is a JWT Signature Verification Bypass?
+A: This occurs when the server fails to verify the JWT signature properly, allowing attackers to:
+
+Forge or tamper with JWTs
+
+Change roles or user IDs
+
+Q3. Example?
+If the server only decodes the token without verifying its signature, an attacker could send:
+
+json
+Copy
+Edit
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+{
+  "user": "admin"
+}
+...with a forged or empty signature, and still be treated as "admin".
+
+Q4. How to prevent it?
+A:
+
+Always verify JWT signatures server-side
+
+Use strong secret keys
+
+Reject unsigned/forged tokens
+
+Use a vetted JWT library
+
+🚫 2. JWT None Algorithm Attack
+Q5. What is the "None" Algorithm Attack in JWT?
+A: In early JWT libraries, an attacker could set:
+
+json
+Copy
+Edit
+"alg": "none"
+...in the JWT header. If the server accepted it, the signature check would be skipped, and the attacker could forge tokens.
+
+Q6. Why does this happen?
+A: Poor or outdated libraries didn’t verify the alg value properly and assumed "none" meant "don’t check signature".
+
+Q7. How to prevent this attack?
+A:
+
+Disallow alg=none
+
+Configure the library to only accept a specific algorithm, like HS256 or RS256
+
+Use up-to-date JWT libraries
+
+🔐 3. JWT Brute-Forcing
+Q8. What is JWT Brute-Forcing?
+A: When an attacker guesses the JWT secret key (in HMAC) via dictionary or brute-force attacks, allowing them to sign their own valid tokens.
+
+Q9. How to test for this?
+A:
+
+Tools like jwt_tool, JWT Cracker, or Burp Suite extensions
+
+Try common secrets like admin, password, secret123
+
+Q10. How to prevent brute-forcing?
+A:
+
+Use long, random secrets
+
+Prefer asymmetric algorithms (RS256) that use private/public key pair
+
+Rate-limit and monitor token generation endpoints
+
+📌 4. Session Fixation
+Q11. What is Session Fixation?
+A: When an attacker sets a session ID (e.g., via URL or cookie) before the victim logs in, then gains access to the victim’s session after login.
+
+Q12. How does it work?
+Attacker sends victim a URL like:
+
+arduino
+Copy
+Edit
+https://example.com/login?sessionid=abc123
+Victim logs in with that ID
+
+Attacker uses same ID to access their session
+
+Q13. How to prevent session fixation?
+A:
+
+Regenerate session ID upon login
+
+Don’t allow session IDs via URL
+
+Use secure cookie flags: HttpOnly, Secure
+
+🌐 5. Session ID in URL
+Q14. Why is storing session IDs in the URL dangerous?
+A:
+
+URLs are logged in:
+
+Browser history
+
+Web server logs
+
+Referer headers
+
+Easy for an attacker to retrieve and hijack sessions
+
+Q15. How to prevent this?
+A:
+
+Store session IDs in cookies only
+
+Use HTTPS and secure cookie flags
+
+Avoid appending ?sessionid=xyz to URLs
+
+⏳ 6. Session Timeout Not Implemented
+Q16. Why is session timeout important?
+A: Without timeout, an attacker with access to a user’s session token (e.g., via XSS or exposed token) can use it indefinitely.
+
+Q17. Best practices for session timeout?
+A:
+
+Idle Timeout (e.g., 15–30 minutes of inactivity)
+
+Absolute Timeout (e.g., 8–24 hours regardless of activity)
+
+Force re-authentication for sensitive actions
+
+Expire session on logout or browser close
+
+✅ Summary Table
+Vulnerability	Description	Impact	Mitigation
+JWT Signature Verification Bypass	Server accepts forged JWTs	Privilege escalation	Validate all JWTs, use strong secrets
+JWT None Algorithm Attack	alg: none skips signature verification	Full token forgery	Disallow none, configure libraries strictly
+JWT Brute-Forcing	Guessing secret key for HMAC JWT	Token forgery	Use strong secrets, prefer asymmetric encryption
+Session Fixation	Session ID reused before/after login	Account takeover	Regenerate session ID after login
+Session ID in URL	Token exposed in logs and referrer headers	Session hijacking	Use secure cookies, avoid token in URL
+Session Timeout Missing	Tokens stay valid forever	Long-term session abuse	Implement idle + absolute session timeouts
