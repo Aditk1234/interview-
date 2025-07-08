@@ -1,0 +1,187 @@
+📱 iOS Mobile VAPT – Interview Q&A
+🔹 Q1: What is iOS Mobile Application VAPT?
+A: iOS Mobile VAPT is the process of identifying, analyzing, and exploiting security weaknesses in iOS applications, typically installed on iPhones/iPads, by analyzing their source code, network communication, storage, and runtime behavior.
+
+🔹 Q2: What are the common vulnerabilities in iOS apps?
+A:
+
+Insecure Data Storage
+
+Improper Platform Usage
+
+Insecure Authentication/Authorization
+
+Insecure Communication (HTTP, weak SSL)
+
+Code Injection / Jailbreak Detection Bypass
+
+Client-Side Injection (e.g., plist tampering)
+
+Insufficient Binary Protections (No ASLR, no code obfuscation)
+
+🔹 Q3: What tools are commonly used in iOS VAPT?
+A:
+
+Frida – Runtime instrumentation
+
+Objection – Runtime assessment framework
+
+Burp Suite / Proxyman / Charles Proxy – Intercepting traffic
+
+MobSF (Mobile Security Framework) – Static + Dynamic analysis
+
+class-dump / Hopper / Ghidra – Reverse engineering
+
+Cycript / LLDB – Runtime modification/debugging
+
+Keychain Dumper – To find sensitive info stored in keychain
+
+Jailbroken device or simulator with Frida
+
+🔹 Q4: How do you intercept iOS app traffic?
+A:
+
+Install a proxy certificate (Burp or Charles) on the iPhone
+
+Use a proxy app to forward traffic
+
+If SSL pinning is enabled, bypass it using:
+
+Frida scripts
+
+Tools like Objection (objection --gadget com.app.name explore > sslpinning disable)
+
+🔹 Q5: What is SSL Pinning and how do you bypass it?
+A:
+
+SSL Pinning ensures the app trusts only a specific server certificate.
+
+Bypass techniques:
+
+Runtime hook with Frida
+
+Use Objection: android sslpinning disable
+
+Patch the binary to skip pinning code (e.g., via Hopper or Ghidra)
+
+🔹 Q6: What is Insecure Data Storage in iOS?
+A: When sensitive data (tokens, passwords, PII) is stored insecurely in:
+
+NSUserDefaults
+
+plist files
+
+SQLite DBs
+
+App's sandbox or logs
+
+Keychain with weak protection class
+
+Mitigation: Use Keychain with proper access control (kSecAttrAccessibleWhenUnlocked), and encrypt sensitive data.
+
+🔹 Q7: How do you check for insecure data storage?
+A:
+
+Use frida, objection, or keychain-dumper to extract sensitive values
+
+Inspect files in app’s sandbox (/Documents, /Library/Preferences/)
+
+Analyze sqlite databases and logs on device or simulator
+
+🔹 Q8: What is Reverse Engineering in iOS?
+A: Decompiling or disassembling iOS binaries (.ipa files) to understand internal logic, uncover hardcoded secrets, or find flaws in authentication logic.
+
+Tools: class-dump, Ghidra, Hopper, otool, strings
+
+🔹 Q9: How do you perform static analysis on an iOS app?
+A:
+
+Extract .ipa file (unzip it)
+
+Inspect Info.plist for configurations (ATS, transport, permissions)
+
+Look for:
+
+Hardcoded API keys or secrets
+
+Insecure URL schemes
+
+Custom implementations of cryptography
+
+Use MobSF for automated static analysis.
+
+🔹 Q10: What are some OWASP MASVS (Mobile AppSec Verification Standard) checks for iOS?
+A:
+
+MSTG-STORAGE-1: Sensitive data is not stored in insecure places
+
+MSTG-PLATFORM-1: The app uses platform-provided security features properly
+
+MSTG-CODE-1: No debug symbols or sensitive data in binary
+
+MSTG-AUTH-2: No auth tokens stored insecurely
+
+MSTG-CRYPTO-1: Secure algorithms and key management in use
+
+🔹 Q11: How to test for insecure local authentication mechanisms?
+A:
+
+Check for bypassable biometric auth (Touch ID/Face ID)
+
+Look for improper session/token handling
+
+Modify authentication logic using runtime instrumentation (e.g., Frida hooks)
+
+🔹 Q12: How do you bypass jailbreak detection in an iOS app?
+A:
+
+Use Frida hooks to override checks
+
+Patch checks in the binary (e.g., functions like stat("/Applications/Cydia.app"))
+
+Use Objection: objection --gadget com.app explore → bypass jailbreak detection
+
+🔹 Q13: How do you perform dynamic analysis on an iOS app?
+A:
+
+Install the app on a jailbroken device or simulator with Frida
+
+Attach Objection or Frida to the app:
+
+bash
+Copy
+Edit
+objection --gadget com.example.app explore
+Analyze runtime behavior: functions, classes, network calls, memory data
+
+🔹 Q14: What is URL Scheme hijacking in iOS?
+A: If an app registers a custom URL scheme (e.g., myapp://) and does not validate inputs properly, other apps or attackers can trigger unintended actions or bypass login.
+
+🔹 Q15: What is ATS (App Transport Security) and why is it important?
+A: ATS forces iOS apps to use HTTPS with strong TLS settings. If ATS is disabled or misconfigured, the app may expose data over insecure HTTP.
+
+Check: Look for NSAllowsArbitraryLoads = true in Info.plist (bad practice).
+
+🔹 Q16: How can an attacker exploit weak binary protections?
+A: If app binaries are not encrypted or protected:
+
+Debuggers can attach to them
+
+Logic can be reversed or patched (e.g., bypassing license checks)
+
+Secrets can be extracted
+
+Mitigation: Enable Bitcode, ASLR, and code obfuscation.
+
+✅ Bonus: Quick Checklist for iOS VAPT
+| Area                | Key Check                                         |
+| ------------------- | ------------------------------------------------- |
+| Storage             | No sensitive data in plist/logs/sandbox           |
+| Auth                | Secure token logic, no bypassable Touch ID        |
+| Network             | HTTPS enforced, no SSL pinning bypass             |
+| Binary              | No debug symbols, obfuscate critical logic        |
+| Runtime             | Jailbreak detection, Frida/Objection protection   |
+| Reverse Engineering | No hardcoded secrets/API keys                     |
+| Permissions         | No overprivileged access (camera, location, etc.) |
+
+
