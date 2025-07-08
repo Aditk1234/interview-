@@ -1,0 +1,169 @@
+⚡ 1. Race Conditions
+❓Q1. What is a race condition in web applications?
+A: A race condition occurs when two or more concurrent requests access shared resources simultaneously, leading to unexpected behavior, like:
+
+Double transactions
+
+Unauthorized data manipulation
+
+Bypassing business logic
+
+❓Q2. Real-world example?
+Double withdrawal / payment:
+
+User submits two payment requests simultaneously
+
+Both are processed before the account balance is updated
+
+Leads to duplicate payments or negative balance
+
+❓Q3. How do you detect race conditions?
+A:
+
+Use Burp Suite's Intruder (with threading)
+
+Use tools like Turbo Intruder or ffuf -t 50
+
+Send concurrent requests to critical endpoints (e.g., /redeem, /transfer)
+
+❓Q4. How to prevent race conditions?
+A:
+
+Use database-level locks
+
+Implement atomic operations (e.g., SELECT FOR UPDATE)
+
+Use mutex locks or queuing for critical sections
+
+🔀 2. Open Redirect
+❓Q5. What is an open redirect vulnerability?
+A: When a web application redirects users to a URL specified in a request parameter without validating it, allowing attackers to:
+
+Perform phishing
+
+Bypass auth/login flows
+
+Steal tokens via redirection
+
+❓Q6. Example of vulnerable URL?
+bash
+Copy
+Edit
+https://example.com/login?redirect=https://evil.com
+After login, the app redirects to evil.com.
+
+❓Q7. How to prevent open redirects?
+A:
+
+Only allow redirect URLs from a whitelist
+
+Validate redirect targets using:
+
+js
+Copy
+Edit
+if (!redirect.startsWith('/')) reject();
+Use relative paths instead of full URLs
+
+🔑 3. OAuth Misconfigurations
+❓Q8. What is OAuth?
+A: OAuth is a protocol that allows third-party applications to access user resources without exposing passwords (e.g., Google Login, Facebook OAuth).
+
+❓Q9. Common OAuth misconfigurations?
+A:
+
+Misconfigured redirect_uri (open redirect)
+
+Missing state parameter (leads to CSRF)
+
+Accepting third-party tokens
+
+Using implicit flow insecurely in public clients
+
+❓Q10. How can OAuth misconfig lead to account takeover?
+A: If state is missing or predictable:
+
+Attacker initiates login flow and captures victim’s access token
+
+Logs in as the victim without credentials
+
+❓Q11. How to secure OAuth flows?
+A:
+
+Always validate and enforce state parameter
+
+Use Authorization Code Flow + PKCE
+
+Whitelist redirect_uri
+
+Validate tokens (issuer, audience, expiration)
+
+👤 4. Account Takeover via Insecure Token Logic
+❓Q12. What is insecure token logic?
+A: When the application uses predictable or weak tokens for:
+
+Email verification
+
+Password reset
+
+Magic login links
+
+➡ Attackers can guess or brute-force them to hijack accounts.
+
+❓Q13. Examples of insecure logic?
+Token not expiring
+
+Token reuse allowed
+
+No user binding (token valid for any account)
+
+Predictable token (e.g., base64(email))
+
+❓Q14. How to prevent token-based takeover?
+A:
+
+Use cryptographically secure random tokens
+
+Expire tokens after short periods
+
+Bind token to user/email and action
+
+Use one-time use tokens
+
+📦 5. Insecure Deserialization (Java / PHP / .NET)
+❓Q15. What is insecure deserialization?
+A: Insecure deserialization happens when untrusted input is deserialized into objects, and the app executes dangerous code or behaviors based on attacker-controlled input.
+
+❓Q16. Why is it dangerous?
+A: Attackers can:
+
+Execute arbitrary code (RCE)
+
+Elevate privileges
+
+Tamper with serialized data (e.g., session objects)
+
+❓Q17. Languages affected?
+Java (e.g., with ObjectInputStream)
+
+PHP (e.g., unserialize())
+
+.NET (e.g., BinaryFormatter)
+
+❓Q18. Real-world example?
+php
+Copy
+Edit
+$data = $_GET['data'];
+$obj = unserialize($data); // Attacker sends a PHP object with malicious __wakeup()
+❓Q19. How to prevent insecure deserialization?
+A:
+
+Avoid deserialization of untrusted input
+
+Use safe formats (JSON, XML with validation)
+
+Implement object whitelisting
+
+Use tools like PHP-GGC, ysoserial, or gadgetinspector for testing
+
