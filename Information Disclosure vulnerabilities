@@ -1,0 +1,169 @@
+🔐 Sensitive Data in URL
+
+🐞 Debug Information Exposure
+
+🏷️ Version/Banner Disclosure
+
+⚠️ Error Messages Leaking Sensitive Info
+
+
+
+ChatGPT said:
+Here are interview questions and answers on Information Disclosure vulnerabilities, covering:
+
+🔐 Sensitive Data in URL
+
+🐞 Debug Information Exposure
+
+🏷️ Version/Banner Disclosure
+
+⚠️ Error Messages Leaking Sensitive Info
+
+These issues are high-risk in VAPT, often overlooked, and commonly exploited by attackers for reconnaissance and lateral movement.
+
+🔐 1. Sensitive Data in URL
+Q1. What is information disclosure?
+A: Information disclosure occurs when an application unintentionally exposes sensitive data to users or attackers, either through its UI, URLs, headers, or responses.
+
+Q2. Why is placing sensitive data in the URL a security issue?
+A:
+
+URLs are stored in:
+
+Browser history
+
+Server logs
+
+Referer headers (sent to third parties)
+
+Anyone with access to those logs or links can retrieve the data.
+
+Q3. Example of sensitive data in URL?
+perl
+Copy
+Edit
+https://example.com/reset?token=abc123456789
+OR
+
+arduino
+Copy
+Edit
+https://bank.com/transfer?to=12345&amount=10000&pin=9999
+Q4. How to prevent sensitive data in URLs?
+A:
+
+Use POST requests for sensitive actions
+
+Pass tokens and PII in the request body, not URL
+
+Avoid including credentials, tokens, or session IDs in query parameters
+
+🐞 2. Debug Information Exposed
+Q5. What is debug information exposure?
+A: When applications leak stack traces, error logs, or debugging data, attackers may learn about:
+
+File paths
+
+Backend tech (e.g., Flask, Laravel)
+
+API structure
+
+SQL queries or credentials
+
+Q6. Example debug info?
+php
+Copy
+Edit
+Exception in thread "main" java.lang.NullPointerException
+	at com.bank.auth.LoginController.authenticate(LoginController.java:42)
+This reveals source file paths and line numbers.
+
+Q7. How to prevent debug info exposure?
+A:
+
+Disable debug/error output in production
+
+Use generic error messages for users
+
+Log detailed errors internally only
+
+Sanitize server responses
+
+🏷️ 3. Version / Banner Disclosure
+Q8. What is banner or version disclosure?
+A: It’s when a service or web app reveals its software version, OS, or server details — giving attackers insights for targeted exploitation.
+
+Q9. Where is banner info usually found?
+A:
+
+HTTP headers:
+
+makefile
+Copy
+Edit
+Server: Apache/2.4.1 (Ubuntu)
+X-Powered-By: PHP/8.1.2
+FTP/SSH banners
+
+HTML comments or JS files (e.g., v1.2.3)
+
+Q10. Why is this dangerous?
+A:
+
+Helps attackers identify known vulnerabilities for specific versions
+
+Increases risk of automated recon attacks
+
+Q11. How to prevent version disclosure?
+A:
+
+Remove or modify banners (e.g., via ServerTokens Prod in Apache)
+
+Minimize exposure in headers (X-Powered-By, etc.)
+
+Obfuscate or hide comments, versioned assets
+
+⚠️ 4. Error Messages Leaking Sensitive Info
+Q12. What kind of data can error messages leak?
+A:
+
+Internal IP addresses
+
+Stack traces
+
+Database errors (e.g., SQL syntax, table names)
+
+Environment variables
+
+API keys or credentials (in misconfigured logs)
+
+Q13. How to test for error-based info leaks?
+A:
+
+Send malformed inputs:
+
+Invalid parameters
+
+Missing fields
+
+SQL characters (', --)
+
+Observe responses for verbose error messages
+
+Q14. Best practices to handle errors securely?
+A:
+
+Display generic error messages to users
+
+Log detailed errors securely (not exposed to frontend)
+
+Implement a global error handler
+
+Avoid exposing internal logic or tech stack
+
+✅ Summary Table
+Issue Type	Risk	Example	Fix
+Sensitive data in URL	Leaked via logs, referers, bookmarks	?token=xyz123	Use POST, avoid sensitive query params
+Debug info exposed	Reveals backend logic, technologies, file paths	Java/PHP stack trace	Disable debug in production, sanitize error responses
+Version/banner disclosure	Helps targeted attacks using version-specific exploits	Server: nginx/1.14.0	Hide server headers, remove comments/version tags
+Error message leaks	May expose internal files, SQL, credentials	SQL error near 'SELECT *'	Show generic error, log securely
