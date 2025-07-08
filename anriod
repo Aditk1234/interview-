@@ -1,0 +1,157 @@
+✅ ANDROID PENTESTING – TECHNICAL QUESTIONS
+🔍 1. Recon & Setup
+What tools do you use for Android app pentesting?
+
+MobSF, jadx, apktool, Burp Suite, Frida, Objection, adb, Android Studio Emulator, Drozer.
+
+How do you decompile an APK?
+
+Use apktool to decode resources + jadx to get readable Java code:
+
+bash
+Copy
+Edit
+apktool d app.apk
+jadx-gui app.apk
+What are the main components of an Android app?
+
+Activities, Services, Broadcast Receivers, Content Providers, and Manifest.
+
+🔓 2. Insecure Data Storage
+Where can Android apps store data insecurely?
+
+SharedPreferences, SQLite DBs, Internal/External Storage, Logcat, Webview cache.
+
+How do you test for insecure storage?
+
+Run app → Use adb shell or Objection:
+
+nginx
+Copy
+Edit
+objection -g app explore
+🔑 3. Authentication and Session Handling
+How do you test login functionalities?
+
+Intercept using Burp, check token reuse, session expiration, bruteforce possibilities.
+
+What is insecure authentication in Android?
+
+Weak password policy, no lockout, no 2FA, client-side auth check, hardcoded tokens.
+
+How do you check for insecure session management?
+
+Look for long-lived tokens, improper logout, and tokens in logs or storage.
+
+📡 4. Insecure Communication
+How do you intercept app traffic?
+
+Use Burp Suite, set device proxy, install Burp cert. Handle SSL Pinning via Frida.
+
+What is SSL pinning?
+
+App only trusts specific certificates or public keys, blocking MITM.
+
+How do you bypass SSL pinning?
+
+Tools: Frida, Objection, patching Smali code, Xposed modules (e.g., JustTrustMe).
+
+🕵️ 5. Reverse Engineering
+How to find hardcoded secrets in an APK?
+
+Decompile with jadx/apktool → search for keys, tokens, URLs.
+
+How do you reverse engineer an Android app?
+
+Unpack APK → analyze manifest, smali/java code → find logic, endpoints, secrets.
+
+🧪 6. Runtime Analysis
+What is Frida and how do you use it?
+
+Dynamic instrumentation tool to hook/modify function calls in real time.
+
+Example: Frida script to bypass root check?
+
+js
+Copy
+Edit
+Java.perform(() => {
+  var rootCheck = Java.use("com.app.RootCheck");
+  rootCheck.isDeviceRooted.implementation = () => false;
+});
+What is Objection?
+
+Frida wrapper to easily bypass SSL pinning, root detection, explore storage.
+
+🧰 7. Exploiting Components
+What is exported component misuse?
+
+Activities, services marked as exported=true can be triggered by other apps → leads to privilege escalation or DoS.
+
+How do you test exported components?
+
+Use Drozer or command line:
+
+bash
+Copy
+Edit
+adb shell am start -n com.target/.ExportedActivity
+What are insecure broadcast receivers?
+
+Receivers that can be triggered without permission → attacker can send fake broadcasts.
+
+🧩 8. Misc / Advanced
+How to detect if an app is debuggable?
+
+android:debuggable="true" in manifest → use adb shell am start -D.
+
+How to test WebView for vulnerabilities?
+
+Check for addJavascriptInterface, unvalidated URLs, JavaScript injection.
+
+What is Tapjacking and how do you test it?
+
+Overlaying a transparent UI to hijack clicks — test using malicious app overlays.
+
+What is Dynamic Code Loading?
+
+Loading .dex files at runtime. If remote and unvalidated → RCE possible.
+
+What are common OWASP MASVS flaws in Android apps?
+
+No root detection, lack of obfuscation, weak auth, poor storage handling, improper cert pinning.
+
+🧾 FORMAL / HR-STYLE QUESTIONS
+✅ 1. Experience-Based
+Tell me about a mobile app you tested recently.
+
+Have you found any critical vulnerability in a production Android app?
+
+What’s your favorite tool for Android testing and why?
+
+Do you have experience testing React Native or hybrid apps?
+
+✅ 2. Process-Oriented
+What is your Android pentesting methodology?
+
+How do you report mobile vulnerabilities to developers?
+
+What steps do you take after identifying a vulnerability?
+
+What is the difference between SAST and DAST in mobile security?
+
+✅ 3. Knowledge-Based
+How does Android sandboxing work?
+
+What is SELinux in Android?
+
+What is the role of the Android Keystore?
+
+What is ProGuard and how does it help?
+
+✅ 4. Behavioral
+How do you stay updated on mobile threats?
+
+How do you handle an app where you can’t intercept traffic?
+
+What would you do if an app keeps crashing during dynamic analysis?
