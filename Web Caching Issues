@@ -1,0 +1,147 @@
+🧪 Web Cache Poisoning
+
+🎭 Web Cache Deception
+
+🔑 Exploiting Cache Keys
+
+
+🧪 1. Web Cache Poisoning
+Q1. What is Web Cache Poisoning?
+A: It’s an attack where a malicious user stores (poisons) harmful or manipulated content in a shared cache, causing other users to receive the attacker’s manipulated response.
+
+Q2. How does it work?
+A:
+
+Caches (e.g., CDN, proxy) store responses for reuse.
+
+If the cache fails to validate headers or parameters properly, the attacker can:
+
+Send a crafted request
+
+Poison the cached version
+
+Victims receive tainted content
+
+Q3. Real example?
+A:
+
+http
+Copy
+Edit
+GET /home HTTP/1.1
+Host: site.com
+X-Host: evil.com
+If the response is cached including X-Host, then all future users may see a redirect to evil.com.
+
+Q4. What are common poisoning vectors?
+A:
+
+Headers: Host, X-Forwarded-Host, X-Original-URL
+
+Query parameters
+
+Request path manipulation
+
+Cookies (if they affect cache key but not response)
+
+Q5. How to prevent web cache poisoning?
+A:
+
+Only cache responses that are identical for all users
+
+Sanitize or ignore user-controlled headers
+
+Set proper Vary: headers (e.g., Vary: Accept-Encoding)
+
+Avoid caching error pages or redirects
+
+🎭 2. Web Cache Deception
+Q6. What is Web Cache Deception?
+A: It’s an attack where an attacker tricks the server into caching a private/authenticated page by adding deceptive URL paths (e.g., fake .css, .jpg) that force a cache.
+
+Q7. Example scenario?
+A:
+
+pgsql
+Copy
+Edit
+GET /account/settings HTTP/1.1  → (Not cached: private)
+
+GET /account/settings/fake.jpg → (Server still returns HTML, but now cached)
+➡ The attacker later loads this URL, and gets a cached version of someone else's private data.
+
+Q8. Why is this dangerous?
+A:
+
+Server sees a request to a static-looking path
+
+Caching proxy/CDN caches it
+
+If it contains user-specific data, it gets leaked to others
+
+Q9. How to test for web cache deception?
+A:
+
+Append /xyz.jpg, /abc.css, /test.php, or /random.html to authenticated endpoints
+
+Check response for sensitive content
+
+Verify if it returns 200 OK and is marked Cacheable
+
+Q10. How to mitigate it?
+A:
+
+Avoid caching user-specific or sensitive pages
+
+Check path extensions before serving dynamic content
+
+Use headers:
+
+http
+Copy
+Edit
+Cache-Control: private, no-store, no-cache
+🔑 3. Exploiting Cache Keys
+Q11. What is a Cache Key?
+A: The cache key is the combination of URL, headers, cookies, and other request parts used to determine whether two requests are "the same" and can share a cached response.
+
+Q12. How can an attacker exploit cache key issues?
+A:
+
+If the cache key doesn’t include user-controlled values, but the server processes them, the attacker can:
+
+Inject malicious behavior in the response
+
+Get it cached and served to others
+
+Q13. Real-world example?
+If the cache key is just the URL:
+
+pgsql
+Copy
+Edit
+GET /index?lang=en&user=admin  → response is cached
+...and attacker sends:
+
+sql
+Copy
+Edit
+GET /index?lang=en&user=evil   → modifies response, but same key used
+➡️ Poisoned response is cached and shown to all.
+
+Q14. How to protect cache keys?
+A:
+
+Ensure cache key includes all user-controlled inputs that affect the response
+
+Use Vary headers carefully
+
+Sanitize untrusted inputs
+
+Avoid depending on non-key elements (like cookies) to render content
+
+✅ Summary Table
+Vulnerability	Description	Example Payload	Defense
+Web Cache Poisoning	Store malicious content in cache used by others	X-Host: evil.com	Sanitize headers, proper cache key handling
+Web Cache Deception	Trick cache into storing private pages	/profile/fake.jpg	No caching on auth pages, check paths/extensions
+Cache Key Exploitation	Cache key doesn’t include all user-controlled values	user=admin in URL, but not in cache key
