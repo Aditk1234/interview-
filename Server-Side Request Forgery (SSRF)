@@ -179,3 +179,15 @@ Use network segmentation
 Block dangerous schemes and IP ranges
 
 Use AppArmor or seccomp to isolate backend services
+
+
+
+| Type of SSRF       | Description                                 | Attack Vector Example                   | Prevention                                      |
+| ------------------ | ------------------------------------------- | --------------------------------------- | ----------------------------------------------- |
+| Basic SSRF         | Server fetches internal/external URLs       | `?url=http://localhost/admin`           | Validate URLs, restrict internal access         |
+| Blind SSRF         | No visible response, detected via callbacks | `http://burp-collab.net/ping`           | Use allowlists, monitor DNS/HTTP callbacks      |
+| URL Scheme SSRF    | Exploits `file://`, `gopher://`, etc.       | `gopher://127.0.0.1:6379/_SET key val`  | Block dangerous schemes                         |
+| DNS Rebinding SSRF | DNS resolves to internal IP on 2nd request  | `evil.com → 8.8.8.8 → 127.0.0.1`        | IP verification after resolution                |
+| SSRF → RCE         | Sends payloads to internal services         | Write shell via Redis using `gopher://` | Network isolation, no unauth access to backends |
+
+
