@@ -1,0 +1,120 @@
+🔹 1. CSRF via GET Request
+Q1. What is CSRF?
+A: CSRF is an attack that tricks a logged-in user’s browser into sending a malicious request to a trusted application without their knowledge — performing actions on their behalf.
+
+Q2. How does CSRF via GET work?
+A: If sensitive actions (like updating email or transferring money) are triggered via GET requests without CSRF protection, an attacker can exploit it using:
+
+html
+Copy
+Edit
+<img src="https://vulnerable.com/change-email?email=attacker@example.com">
+Q3. Why is CSRF via GET dangerous?
+A: GET requests can be triggered silently by loading an image, iframe, or link — enabling unauthorized state-changing actions without user consent.
+
+Q4. How to prevent CSRF via GET?
+A:
+
+Avoid sensitive state changes over GET (use POST)
+
+Implement CSRF tokens
+
+Enforce SameSite cookies
+
+Check Referer or Origin headers
+
+🔹 2. CSRF via POST Request
+Q5. How does CSRF via POST work?
+A: The attacker creates a malicious form on another site:
+
+html
+Copy
+Edit
+<form action="https://vulnerable.com/transfer" method="POST">
+  <input type="hidden" name="amount" value="10000">
+</form>
+<script>document.forms[0].submit();</script>
+If the user is authenticated, the request runs with their session.
+
+Q6. How is POST CSRF mitigated?
+A:
+
+Use CSRF tokens in all POST forms
+
+Validate Origin and Referer headers
+
+Set SameSite=Lax or Strict for cookies
+
+Q7. What is a CSRF token?
+A: A unique, unpredictable value tied to a user session and embedded in every form/request. It must be validated by the server to confirm request authenticity.
+
+🔹 3. CSRF Token Bypass (Multi-step, Missing Origin)
+Q8. How can CSRF tokens be bypassed?
+A:
+
+Multi-step forms: If token is validated only on the first step, later requests may be vulnerable.
+
+Tokens not tied to session/IP
+
+Tokens leaked via Referer/header
+
+Missing Origin/Referer validation
+
+Q9. What is an example of CSRF token bypass via multi-step flow?
+A: If a CSRF token is issued in step 1 (e.g., load profile), but not required in step 2 (e.g., submit form), an attacker can forge step 2 and still execute actions.
+
+Q10. What is the difference between CSRF and IDOR?
+A:
+
+CSRF: Attacks authenticated users by tricking them into submitting malicious requests.
+
+IDOR: Allows access/modification of resources by directly referencing unprotected object IDs (e.g., user_id=2).
+
+🔹 4. SameSite Cookie Attribute Bypass
+Q11. What is the SameSite cookie attribute?
+A: A cookie setting that restricts when cookies are sent with cross-site requests.
+
+Strict: Only sent for same-origin requests
+
+Lax: Sent for top-level navigations (e.g., links)
+
+None: Always sent, requires Secure
+
+Q12. How can SameSite be bypassed?
+A:
+
+If the app uses SameSite=None without proper CSRF tokens, cookies are still sent with cross-site requests.
+
+Some older browsers ignore SameSite.
+
+Attackers can try clickjacking to trick the user into making same-origin requests.
+
+Q13. How to mitigate CSRF effectively?
+A:
+
+Use CSRF tokens with each state-changing request
+
+Set cookies with SameSite=Strict or Lax
+
+Check Origin and Referer headers
+
+Use CAPTCHA or re-authentication for critical actions
+
+Q14. Can APIs be vulnerable to CSRF?
+A: Yes, especially if they rely on browser cookies for authentication and do not check the Origin or use CSRF tokens.
+
+Q15. What tools help detect CSRF?
+A:
+
+Burp Suite Pro (Scanner, manual test with Repeater)
+
+OWASP ZAP
+
+Postman (for manual CSRF token validation)
+
+Summary Table:
+Type	Description	Defense
+CSRF via GET	Uses GET request to trigger action	Use POST, SameSite, token
+CSRF via POST	Hidden form auto-submitted	CSRF token, validate origin
+Token bypass (multi-step)	Token only validated once	Enforce token on every request
+SameSite bypass	Cookie sent due to SameSite=None	Set SameSite=Strict/Lax
