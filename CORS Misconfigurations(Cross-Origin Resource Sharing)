@@ -111,8 +111,9 @@ Do not allow credentials with *
 Avoid dynamically reflecting the Origin header without validation
 
 ✅ Summary Table
-Misconfiguration Type	Risk	Fix
-Access-Control-Allow-Origin: null	Sandbox/file-based attacks	Block or validate null origin
-Access-Control-Allow-Origin: * + credentials	Full session hijack, PII exposure	Never allow * with credentials
-Reflecting arbitrary Origin header	Cross-origin access by attacker-controlled sites	Use strict allowlist of trusted origins
-Misusing credentials in CORS	Steals cookies/session tokens	Avoid Access-Control-Allow-Credentials if not needed
+| Misconfiguration Type                          | Risk                                             | Fix                                                    |
+| ---------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------ |
+| `Access-Control-Allow-Origin: null`            | Sandbox/file-based attacks                       | Block or validate null origin                          |
+| `Access-Control-Allow-Origin: *` + credentials | Full session hijack, PII exposure                | Never allow `*` with credentials                       |
+| Reflecting arbitrary Origin header             | Cross-origin access by attacker-controlled sites | Use strict allowlist of trusted origins                |
+| Misusing credentials in CORS                   | Steals cookies/session tokens                    | Avoid `Access-Control-Allow-Credentials` if not needed |
