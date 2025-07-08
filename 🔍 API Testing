@@ -1,0 +1,455 @@
+ChatGPT said:
+Here’s a detailed list of API Security Testing Interview Questions & Answers — ideal for VAPT, bug bounty, cybersecurity analyst, or AppSec roles.
+
+🔍 API Testing – Interview Questions & Answers
+🔹 Q1: What is API Security Testing?
+A: API Security Testing involves checking the security posture of Application Programming Interfaces (APIs) to identify vulnerabilities such as broken authentication, improper access controls, insecure data exposure, and injection flaws.
+
+🔹 Q2: What are common API vulnerabilities?
+A:
+
+Broken Object Level Authorization (BOLA/IDOR)
+
+Broken Authentication
+
+Excessive Data Exposure
+
+Mass Assignment
+
+Injection Attacks (SQLi, XSS, JSONi)
+
+Rate Limiting Bypass
+
+Server-Side Request Forgery (SSRF)
+
+Improper Asset Management
+
+Lack of Logging and Monitoring
+
+🔹 Q3: How do you test for BOLA / IDOR in APIs?
+A:
+
+Change the user_id, file_id, account_id in the request:
+
+http
+Copy
+Edit
+GET /api/user/1234
+Try accessing another user’s data:
+
+http
+Copy
+Edit
+GET /api/user/1235
+If access is granted → Vulnerable to IDOR (Insecure Direct Object Reference)
+
+🔹 Q4: How do you test for API authentication weaknesses?
+A:
+
+Check for:
+
+Weak or missing tokens
+
+Predictable or reusable tokens
+
+JWT tampering (none alg, invalid signature)
+
+Use expired/forged tokens
+
+Try login brute-force or token leakage from responses
+
+🔹 Q5: What is mass assignment in API security?
+A: If an API blindly accepts user-supplied JSON, attackers can overwrite fields like isAdmin, role, etc.
+
+Example:
+
+json
+Copy
+Edit
+POST /api/user/update
+{
+  "username": "user",
+  "isAdmin": true
+}
+➡️ If isAdmin is not filtered, attacker becomes admin.
+
+Mitigation: Whitelist allowed fields on backend.
+
+🔹 Q6: How do you detect excessive data exposure?
+A:
+
+Review JSON responses.
+
+Check if the API exposes internal fields:
+
+password_hash, isAdmin, internalId, debugData, etc.
+
+If frontend hides it but backend exposes it = problem.
+
+🔹 Q7: How to test for rate limiting issues?
+A:
+
+Send multiple requests rapidly using tools like:
+
+Burp Intruder, ffuf, Turbo Intruder, Postman
+
+Check if:
+
+Brute-force login is possible
+
+No 429 Too Many Requests error
+
+CAPTCHA is missing or ineffective
+
+🔹 Q8: What tools do you use for API testing?
+A:
+
+Burp Suite – manual + automated testing
+
+Postman – manual testing + scripting
+
+OWASP ZAP – scanner + fuzzing
+
+Insomnia, Hoppscotch – alternatives to Postman
+
+ffuf, nuclei, jwt_tool, ParamMiner, jwt-cracker – for automation
+
+🔹 Q9: How do you test for insecure HTTP methods?
+A:
+
+Use curl or Burp:
+
+bash
+Copy
+Edit
+curl -X OPTIONS https://example.com/api/
+If methods like PUT, DELETE, TRACE are enabled, check for misuse.
+
+🔹 Q10: What are security headers important for API responses?
+A:
+
+Content-Security-Policy (CSP)
+
+Strict-Transport-Security
+
+X-Frame-Options
+
+Access-Control-Allow-Origin (CORS)
+
+X-Content-Type-Options
+
+Missing or misconfigured headers can lead to:
+
+Clickjacking
+
+XSS
+
+CORS abuse
+
+🔹 Q11: How do you test for CORS misconfiguration in APIs?
+A:
+
+Send request with:
+
+http
+Copy
+Edit
+Origin: evil.com
+If response includes:
+
+yaml
+Copy
+Edit
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+➡️ It’s vulnerable.
+
+🔹 Q12: How do you test JWT vulnerabilities?
+A:
+
+Check for:
+
+None algorithm attack (alg: none)
+
+Weak secret bruteforcing (use jwt_tool, john)
+
+Payload tampering
+
+Expired or reused JWT
+
+🔹 Q13: What is API versioning abuse?
+A: If older API versions are still accessible (e.g., /v1/api/user), and vulnerable, attackers can target those endpoints even if the frontend uses /v3.
+
+➡️ Always test deprecated versions.
+
+🔹 Q14: What are common attack payloads for APIs?
+A:
+
+SQLi: ' OR 1=1--
+
+XSS: "><script>alert(1)</script>
+
+SSRF: http://127.0.0.1:80/
+
+JSONi: { "$ne": null }
+
+JWT None: { "alg": "none" }
+
+Broken auth: Try token swapping or bypassing MFA
+
+🔹 Q15: What is the OWASP API Top 10?
+A:
+
+API1 – Broken Object Level Authorization
+
+API2 – Broken Authentication
+
+API3 – Excessive Data Exposure
+
+API4 – Lack of Resources & Rate Limiting
+
+API5 – Broken Function Level Authorization
+
+API6 – Mass Assignment
+
+API7 – Security Misconfiguration
+
+API8 – Injection
+
+API9 – Improper Asset Management
+
+API10 – Insufficient Logging & Monitoring
+
+ChatGPT said:
+Here’s a detailed list of API Security Testing Interview Questions & Answers — ideal for VAPT, bug bounty, cybersecurity analyst, or AppSec roles.
+
+🔍 API Testing – Interview Questions & Answers
+🔹 Q1: What is API Security Testing?
+A: API Security Testing involves checking the security posture of Application Programming Interfaces (APIs) to identify vulnerabilities such as broken authentication, improper access controls, insecure data exposure, and injection flaws.
+
+🔹 Q2: What are common API vulnerabilities?
+A:
+
+Broken Object Level Authorization (BOLA/IDOR)
+
+Broken Authentication
+
+Excessive Data Exposure
+
+Mass Assignment
+
+Injection Attacks (SQLi, XSS, JSONi)
+
+Rate Limiting Bypass
+
+Server-Side Request Forgery (SSRF)
+
+Improper Asset Management
+
+Lack of Logging and Monitoring
+
+🔹 Q3: How do you test for BOLA / IDOR in APIs?
+A:
+
+Change the user_id, file_id, account_id in the request:
+
+http
+Copy
+Edit
+GET /api/user/1234
+Try accessing another user’s data:
+
+http
+Copy
+Edit
+GET /api/user/1235
+If access is granted → Vulnerable to IDOR (Insecure Direct Object Reference)
+
+🔹 Q4: How do you test for API authentication weaknesses?
+A:
+
+Check for:
+
+Weak or missing tokens
+
+Predictable or reusable tokens
+
+JWT tampering (none alg, invalid signature)
+
+Use expired/forged tokens
+
+Try login brute-force or token leakage from responses
+
+🔹 Q5: What is mass assignment in API security?
+A: If an API blindly accepts user-supplied JSON, attackers can overwrite fields like isAdmin, role, etc.
+
+Example:
+
+json
+Copy
+Edit
+POST /api/user/update
+{
+  "username": "user",
+  "isAdmin": true
+}
+➡️ If isAdmin is not filtered, attacker becomes admin.
+
+Mitigation: Whitelist allowed fields on backend.
+
+🔹 Q6: How do you detect excessive data exposure?
+A:
+
+Review JSON responses.
+
+Check if the API exposes internal fields:
+
+password_hash, isAdmin, internalId, debugData, etc.
+
+If frontend hides it but backend exposes it = problem.
+
+🔹 Q7: How to test for rate limiting issues?
+A:
+
+Send multiple requests rapidly using tools like:
+
+Burp Intruder, ffuf, Turbo Intruder, Postman
+
+Check if:
+
+Brute-force login is possible
+
+No 429 Too Many Requests error
+
+CAPTCHA is missing or ineffective
+
+🔹 Q8: What tools do you use for API testing?
+A:
+
+Burp Suite – manual + automated testing
+
+Postman – manual testing + scripting
+
+OWASP ZAP – scanner + fuzzing
+
+Insomnia, Hoppscotch – alternatives to Postman
+
+ffuf, nuclei, jwt_tool, ParamMiner, jwt-cracker – for automation
+
+🔹 Q9: How do you test for insecure HTTP methods?
+A:
+
+Use curl or Burp:
+
+bash
+Copy
+Edit
+curl -X OPTIONS https://example.com/api/
+If methods like PUT, DELETE, TRACE are enabled, check for misuse.
+
+🔹 Q10: What are security headers important for API responses?
+A:
+
+Content-Security-Policy (CSP)
+
+Strict-Transport-Security
+
+X-Frame-Options
+
+Access-Control-Allow-Origin (CORS)
+
+X-Content-Type-Options
+
+Missing or misconfigured headers can lead to:
+
+Clickjacking
+
+XSS
+
+CORS abuse
+
+🔹 Q11: How do you test for CORS misconfiguration in APIs?
+A:
+
+Send request with:
+
+http
+Copy
+Edit
+Origin: evil.com
+If response includes:
+
+yaml
+Copy
+Edit
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+➡️ It’s vulnerable.
+
+🔹 Q12: How do you test JWT vulnerabilities?
+A:
+
+Check for:
+
+None algorithm attack (alg: none)
+
+Weak secret bruteforcing (use jwt_tool, john)
+
+Payload tampering
+
+Expired or reused JWT
+
+🔹 Q13: What is API versioning abuse?
+A: If older API versions are still accessible (e.g., /v1/api/user), and vulnerable, attackers can target those endpoints even if the frontend uses /v3.
+
+➡️ Always test deprecated versions.
+
+🔹 Q14: What are common attack payloads for APIs?
+A:
+
+SQLi: ' OR 1=1--
+
+XSS: "><script>alert(1)</script>
+
+SSRF: http://127.0.0.1:80/
+
+JSONi: { "$ne": null }
+
+JWT None: { "alg": "none" }
+
+Broken auth: Try token swapping or bypassing MFA
+
+🔹 Q15: What is the OWASP API Top 10?
+A:
+
+API1 – Broken Object Level Authorization
+
+API2 – Broken Authentication
+
+API3 – Excessive Data Exposure
+
+API4 – Lack of Resources & Rate Limiting
+
+API5 – Broken Function Level Authorization
+
+API6 – Mass Assignment
+
+API7 – Security Misconfiguration
+
+API8 – Injection
+
+API9 – Improper Asset Management
+
+API10 – Insufficient Logging & Monitoring
+
+✅
+| Test Case                            | Goal                         |
+| ------------------------------------ | ---------------------------- |
+| Test all HTTP methods (GET, POST...) | Look for unsafe methods      |
+| Change ID in URL or body             | Check for IDOR               |
+| Tamper with JWT                      | Check for none/weak secrets  |
+| Submit large payloads                | Test for rate limiting       |
+| Inspect response fields              | Check for excessive exposure |
+| Replay tokens                        | Session fixation/token reuse |
+| Test old API versions                | Bypass patched endpoints     |
+
