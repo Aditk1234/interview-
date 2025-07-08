@@ -129,9 +129,9 @@ Perform threat modeling on key features
 Implement strict server-side authorization logic
 
 ✅ Summary Table
-Type	Description	Example	Prevention
-IDOR	Access to objects by changing identifiers	/invoice?id=22 → accessing another user's invoice	Server-side checks, indirect references
-Vertical Privilege Escalation	Lower role accesses higher-level actions	User accessing admin panel or deleting other users	Role checks on every request
-Horizontal Privilege Escalation	Same role accesses other user data	User changing user_id in API call to access others' profiles	Ownership checks, session validation
-Business Logic Flaws	Bypassing business workflows to abuse functionality	Skipping payment step but still getting products	Secure design, backend validation
-
+| Type                                | Description                                         | Example                                                        | Prevention                              |
+| ----------------------------------- | --------------------------------------------------- | -------------------------------------------------------------- | --------------------------------------- |
+| **IDOR**                            | Access to objects by changing identifiers           | `/invoice?id=22` → accessing another user's invoice            | Server-side checks, indirect references |
+| **Vertical Privilege Escalation**   | Lower role accesses higher-level actions            | User accessing admin panel or deleting other users             | Role checks on every request            |
+| **Horizontal Privilege Escalation** | Same role accesses other user data                  | User changing `user_id` in API call to access others' profiles | Ownership checks, session validation    |
+| **Business Logic Flaws**            | Bypassing business workflows to abuse functionality | Skipping payment step but still getting products               | Secure design, backend validation       |
