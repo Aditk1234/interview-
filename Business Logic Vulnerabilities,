@@ -1,0 +1,144 @@
+Flawed Discount Logic
+
+Insecure Workflows
+
+Broken State Transitions
+
+Bypassing Logic Restrictions
+
+
+
+
+ 1. Flawed Discount Logic
+Q1. What is a Business Logic Vulnerability?
+A: It occurs when an attacker manipulates how the application is supposed to behave (its business rules), often without triggering any technical security error — exploiting logic flaws instead.
+
+Q2. What is flawed discount logic?
+A: When an attacker abuses promotional or discount rules (e.g., applying the same coupon multiple times or using expired offers).
+
+Q3. Example of flawed discount logic?
+A:
+
+http
+Copy
+Edit
+POST /apply-coupon  
+coupon=SAVE50
+If the attacker applies SAVE50 multiple times or changes price in client-side logic (e.g., JS), they may get a free product or deep discount.
+
+Q4. How to prevent it?
+A:
+
+Validate discount logic on the server side
+
+Enforce one-time coupon use
+
+Maintain backend logs of coupon usage
+
+Avoid calculating price on the client-side
+
+🔄 2. Insecure Workflow
+Q5. What is an insecure workflow?
+A: A workflow where critical checks are skipped, or steps can be completed out of order, leading to privilege misuse, unauthorized access, or free product delivery.
+
+Q6. Example of insecure workflow?
+A:
+
+In a multi-step checkout, attacker skips the payment step and still confirms the order.
+
+Attacker accesses /checkout/success directly.
+
+Q7. How can testers detect insecure workflows?
+A:
+
+Use Burp Suite to capture multi-step sequences
+
+Replay requests skipping steps or changing parameters
+
+Monitor for success despite missing required logic
+
+Q8. How to fix insecure workflows?
+A:
+
+Enforce step-based tokens or flags (e.g., step_token)
+
+Server must verify that prior steps were successfully completed
+
+Implement server-side session tracking of flow
+
+🔁 3. Broken State Transitions
+Q9. What is a broken state transition?
+A: When a user can change their role, access, or status by manipulating state variables or skipping transition validations.
+
+Q10. Example?
+A:
+
+A normal user manipulates a request to:
+
+json
+Copy
+Edit
+{ "role": "admin" }
+...or accesses an endpoint to directly activate an account without verification.
+
+Q11. How can you test broken state transitions?
+A:
+
+Try changing account_status, user_role, email_verified in requests
+
+Access protected URLs before you're authorized
+
+Replay requests from a different session or role
+
+Q12. How to prevent it?
+A:
+
+Backend should enforce strict state validation
+
+Do not allow state-altering parameters from user input
+
+Validate transitions (e.g., only verified users can access /dashboard)
+
+🎯 4. Manipulating Application Logic to Bypass Restrictions
+Q13. What does it mean to bypass application logic?
+A: Exploiting how the app expects users to behave, often by:
+
+Skipping JS validations
+
+Modifying prices, roles, or quantities
+
+Using API directly instead of front-end
+
+Q14. Common examples?
+Changing price or quantity in an API request
+
+Manually submitting a form that the UI hides
+
+Editing is_premium_user: false → true in JSON
+
+Q15. How can testers identify this?
+A:
+
+Intercept requests with Burp Suite
+
+Modify parameters that affect logic (e.g., price, user type, flags)
+
+Try actions that aren’t allowed through the UI
+
+Q16. How to mitigate logic bypass issues?
+A:
+
+Never trust client-side logic — validate everything server-side
+
+Disable hidden parameters in front-end and back-end
+
+Implement role-based access control on APIs
+
+Log unusual sequences or bypass attempts
+
+✅ Summary Table
+Vulnerability	Description	Example	Fix
+Flawed Discount Logic	Misusing coupons or discounts repeatedly	Re-applying SAVE50 multiple times	Backend validation, coupon limits
+Insecure Workflow	Skipping critical steps	Direct access to /confirm-order without payment	Step-by-step session tracking
+Broken State Transitions	Jumping to unauthorized states	Changing account_verified: false → true	Strict state validation in backend
+Bypassing Logic Restrictions	Altering data to perform forbidden actions	price=1 in re
