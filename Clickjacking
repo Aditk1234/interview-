@@ -115,7 +115,9 @@ Content-Security-Policy: frame-ancestors 'none';
 They are enforced by the browser, not by JavaScript, and are harder to bypass.
 
 ✅ Summary Table
-Attack Type	Description	Defense
-Clickjacking	Tricking clicks via hidden iframe	X-Frame-Options, CSP frame-ancestors, deny framing
-UI Redressing	Deceiving user perception of UI	Same defenses + strong visual indicators, double-check UI
-Frame-busting Bypass	Bypassing JavaScript protections	Use headers instead of/in addition to JS
+| Misconfiguration Type                          | Risk                                             | Fix                                                    |
+| ---------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------ |
+| `Access-Control-Allow-Origin: null`            | Sandbox/file-based attacks                       | Block or validate null origin                          |
+| `Access-Control-Allow-Origin: *` + credentials | Full session hijack, PII exposure                | Never allow `*` with credentials                       |
+| Reflecting arbitrary Origin header             | Cross-origin access by attacker-controlled sites | Use strict allowlist of trusted origins                |
+| Misusing credentials in CORS                   | Steals cookies/session tokens                    | Avoid `Access-Control-Allow-Credentials` if not needed |
