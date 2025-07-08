@@ -1,0 +1,154 @@
+🔐 1. Basic Understanding
+Q1. What is mobile application security?
+Answer: Mobile app security is the practice of safeguarding mobile applications from threats like reverse engineering, insecure data storage, unauthorized access, and network-based attacks.
+
+Q2. What are the main differences between Android and iOS from a security perspective?
+Answer:
+
+Android: Open-source, APK-based, easier to reverse-engineer, allows sideloading apps.
+
+iOS: Closed-source, apps run in a sandbox, harder to reverse engineer, sideloading is restricted.
+
+📱 2. Common Mobile Vulnerabilities
+Q3. List common mobile app vulnerabilities.
+Answer:
+
+Insecure Data Storage
+
+Insecure Communication (no HTTPS, weak cert pinning)
+
+Insecure Authentication
+
+Improper Platform Usage
+
+Code Tampering
+
+Reverse Engineering
+
+Client-Side Injection
+
+Insecure Logging
+
+Q4. What is insecure data storage? Where does it usually happen?
+Answer: It refers to sensitive data being stored insecurely in local files like:
+
+Shared Preferences (Android)
+
+NSUserDefaults (iOS)
+
+SQLite Databases
+
+Cache/Logs
+
+External Storage (SD Card)
+
+🧪 3. Penetration Testing Approach
+Q5. What tools are used for mobile app pentesting?
+Answer:
+
+Static Analysis: MobSF, jadx, apktool
+
+Dynamic Analysis: Burp Suite, Frida, Objection
+
+Emulators: Android Studio Emulator, Genymotion
+
+iOS: Hopper, Frida, iFrida, Cycript
+
+Q6. How do you intercept HTTPS traffic from a mobile app?
+Answer:
+
+Set up Burp Suite.
+
+Configure phone's proxy to point to Burp.
+
+Install Burp CA certificate on device.
+
+Handle SSL Pinning (bypass using Frida or patch APK).
+
+Q7. How do you bypass root/jailbreak detection?
+Answer:
+
+Android: Use Magisk + MagiskHide, patch root detection code.
+
+iOS: Use Liberty Lite, tweak with Frida, modify system APIs.
+
+🧠 4. Secure Coding & Remediation
+Q8. How do you prevent reverse engineering?
+Answer:
+
+Obfuscate code (ProGuard, R8)
+
+Native code for critical logic (NDK)
+
+Root/jailbreak detection
+
+Runtime checks
+
+Code encryption
+
+Q9. What is certificate pinning?
+Answer: A security mechanism where the app only accepts specific server certificates (or public keys), preventing MITM even if a CA is compromised.
+
+🔐 5. OWASP MASVS & MASTG
+Q10. What is OWASP MASVS?
+Answer: The Mobile Application Security Verification Standard — a baseline for mobile app security, with levels MASVS-L1 (basic), MASVS-L2 (defense-in-depth), and R (resiliency).
+
+Q11. What is MASTG?
+Answer: Mobile Application Security Testing Guide — OWASP's guide for how to test mobile apps practically, aligned with MASVS.
+
+🧩 6. Static & Dynamic Analysis
+Q12. What do you look for in a static analysis?
+Answer:
+
+Hardcoded credentials or API keys
+
+Insecure permissions
+
+Exported components
+
+Debuggable apps
+
+Insecure use of WebView or Intents
+
+Q13. What do you test in dynamic analysis?
+Answer:
+
+Network traffic interception
+
+Runtime code manipulation (Frida)
+
+API calls and business logic
+
+Local storage during app use
+
+🔄 7. Frida & Objection
+Q14. What is Frida?
+Answer: A dynamic instrumentation toolkit for injecting JavaScript to hook and modify runtime behavior of mobile apps.
+
+Q15. What is Objection?
+Answer: A runtime mobile exploration toolkit built on Frida, used to bypass root detection, dump strings, inspect storage, etc.
+
+💡 8. Real World & Scenario-Based
+Q16. A mobile app is leaking tokens in logs. What do you do?
+Answer: Check logs via Logcat (Android) or Console (iOS), report the leakage, recommend to avoid logging sensitive data.
+
+Q17. How would you test for insecure authentication?
+Answer:
+
+Bypass login using manipulated requests
+
+Check for hardcoded credentials
+
+Look for weak session tokens
+
+Test session expiry
+
+⚠️ 9. Bonus Questions
+Q18. What is deep linking? Can it be abused?
+Answer: Deep links allow apps to be opened to specific screens via URLs. If unvalidated, it can lead to unauthorized actions or Intent Hijacking.
+
+Q19. What is Tapjacking?
+Answer: A UI redress attack where a transparent overlay tricks users into clicking something unintended.
+
+Q20. What is Code Injection in mobile apps?
+Answer: Injecting malicious code into the app via Frida, tampered APK, or insecure WebView, affecting app behavior.
