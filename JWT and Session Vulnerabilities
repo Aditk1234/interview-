@@ -151,10 +151,11 @@ Force re-authentication for sensitive actions
 Expire session on logout or browser close
 
 ✅ Summary Table
-Vulnerability	Description	Impact	Mitigation
-JWT Signature Verification Bypass	Server accepts forged JWTs	Privilege escalation	Validate all JWTs, use strong secrets
-JWT None Algorithm Attack	alg: none skips signature verification	Full token forgery	Disallow none, configure libraries strictly
-JWT Brute-Forcing	Guessing secret key for HMAC JWT	Token forgery	Use strong secrets, prefer asymmetric encryption
-Session Fixation	Session ID reused before/after login	Account takeover	Regenerate session ID after login
-Session ID in URL	Token exposed in logs and referrer headers	Session hijacking	Use secure cookies, avoid token in URL
-Session Timeout Missing	Tokens stay valid forever	Long-term session abuse	Implement idle + absolute session timeouts
+| Vulnerability                     | Description                                | Impact                  | Mitigation                                       |
+| --------------------------------- | ------------------------------------------ | ----------------------- | ------------------------------------------------ |
+| JWT Signature Verification Bypass | Server accepts forged JWTs                 | Privilege escalation    | Validate all JWTs, use strong secrets            |
+| JWT None Algorithm Attack         | `alg: none` skips signature verification   | Full token forgery      | Disallow none, configure libraries strictly      |
+| JWT Brute-Forcing                 | Guessing secret key for HMAC JWT           | Token forgery           | Use strong secrets, prefer asymmetric encryption |
+| Session Fixation                  | Session ID reused before/after login       | Account takeover        | Regenerate session ID after login                |
+| Session ID in URL                 | Token exposed in logs and referrer headers | Session hijacking       | Use secure cookies, avoid token in URL           |
+| Session Timeout Missing           | Tokens stay valid forever                  | Long-term session abuse | Implement idle + absolute session timeouts       |
