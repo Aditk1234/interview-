@@ -1,0 +1,137 @@
+ChatGPT said:
+Here are interview questions and answers for Access Control Issues, including:
+
+Insecure Direct Object References (IDOR)
+
+Vertical Privilege Escalation
+
+Horizontal Privilege Escalation
+
+Business Logic Flaws in Access Control
+
+🔐 1. Insecure Direct Object References (IDOR)
+Q1. What is IDOR?
+A: Insecure Direct Object Reference (IDOR) occurs when an application exposes internal object identifiers (like user IDs, file names) in URLs or requests, without proper access control, allowing attackers to access unauthorized data.
+
+Q2. Example of IDOR?
+A: A URL like:
+
+bash
+Copy
+Edit
+https://example.com/user/profile?id=1234
+If the attacker changes 1234 to 1235 and sees someone else’s profile — it's an IDOR.
+
+Q3. How to test for IDOR?
+A:
+
+Change object identifiers in requests (e.g., user IDs, invoice numbers)
+
+Observe if unauthorized access is granted
+
+Try it on POST, GET, PUT, DELETE requests
+
+Q4. How to prevent IDOR?
+A:
+
+Never trust user input for object access
+
+Enforce access control checks on the backend
+
+Use indirect identifiers (e.g., UUIDs or tokens)
+
+🔐 2. Vertical Privilege Escalation
+Q5. What is Vertical Privilege Escalation?
+A: It occurs when a lower-privileged user (e.g., normal user) gains access to functions or data meant for higher-privileged users (e.g., admin).
+
+Q6. Example of Vertical Privilege Escalation?
+A: A regular user accessing:
+
+pgsql
+Copy
+Edit
+https://example.com/admin/delete-user?id=555
+...and successfully deleting a user without being an admin.
+
+Q7. How to test for Vertical Privilege Escalation?
+A:
+
+Log in as a low-privileged user
+
+Access endpoints or features reserved for admins
+
+Observe any role-based controls missing
+
+Q8. How to prevent it?
+A:
+
+Use role-based access control (RBAC)
+
+Validate user roles server-side for every sensitive action
+
+Do not rely on UI-level restrictions alone
+
+🔐 3. Horizontal Privilege Escalation
+Q9. What is Horizontal Privilege Escalation?
+A: It occurs when a user accesses other users' resources or actions within the same privilege level.
+
+Q10. Example of Horizontal Privilege Escalation?
+A: A student accessing another student’s grades:
+
+arduino
+Copy
+Edit
+https://school.com/grades?student_id=2023
+Q11. How to detect Horizontal Privilege Escalation?
+A:
+
+Change parameters like user IDs, email, file names
+
+Attempt unauthorized access to peer accounts
+
+Try performing actions on behalf of other users
+
+Q12. How to prevent it?
+A:
+
+Always verify ownership of requested resources
+
+Use user sessions or tokens to fetch user-specific data (don’t rely on request input)
+
+🔐 4. Business Logic Flaws in Access Control
+Q13. What is a Business Logic Access Control flaw?
+A: These flaws allow unauthorized actions due to weak design logic, even if technical access controls are in place.
+
+Q14. Example?
+A: A user cancels an order but the system still refunds them after they download the product — refund logic is flawed.
+
+Another example:
+A payment is made only on the last step of a multi-step form. The attacker skips the final step and still gets the order placed.
+
+Q15. How to test for business logic flaws?
+A:
+
+Try manipulating request sequences
+
+Skip steps or perform actions out of intended flow
+
+Attempt unauthorized operations using intended features
+
+Q16. How to prevent business logic issues?
+A:
+
+Design secure workflows (e.g., enforce step sequences)
+
+Apply consistent backend validation
+
+Perform threat modeling on key features
+
+Implement strict server-side authorization logic
+
+✅ Summary Table
+Type	Description	Example	Prevention
+IDOR	Access to objects by changing identifiers	/invoice?id=22 → accessing another user's invoice	Server-side checks, indirect references
+Vertical Privilege Escalation	Lower role accesses higher-level actions	User accessing admin panel or deleting other users	Role checks on every request
+Horizontal Privilege Escalation	Same role accesses other user data	User changing user_id in API call to access others' profiles	Ownership checks, session validation
+Business Logic Flaws	Bypassing business workflows to abuse functionality	Skipping payment step but still getting products	Secure design, backend validation
+
