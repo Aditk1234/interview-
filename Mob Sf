@@ -1,1 +1,72 @@
 
+✅ STEP-BY-STEP SETUP FOR MOBILE APP SECURITY LAB (Kali on VMware)
+🔧 PREREQUISITES
+Item	Description
+💻 VMware Workstation/Player	For running Kali Linux VM
+📱 Android Emulator (Genymotion or Nox)	For running APKs
+🔍 APK File	Test mobile app (get sample from APKPure, GitHub, etc.)
+🌐 Internet	For tool installation and emulator download
+
+🧱 STEP 1: Install Kali Linux in VMware
+Download Kali ISO: https://www.kali.org/get-kali/
+
+Create a new virtual machine in VMware:
+
+OS: Linux → Debian 10/11 64-bit
+
+Memory: 4 GB+
+
+Disk: 40 GB+
+
+Install Kali and update:
+
+bash
+Copy
+Edit
+sudo apt update && sudo apt upgrade -y
+🧰 STEP 2: Install Required Tools in Kali Linux
+🔹 1. APKTool
+bash
+Copy
+Edit
+sudo apt install apktool
+🔹 2. dex2jar
+bash
+Copy
+Edit
+sudo apt install dex2jar
+🔹 3. JD-GUI (GUI for JARs)
+Download from: https://github.com/java-decompiler/jd-gui/releases
+
+🔹 4. MobSF (Mobile Security Framework)
+bash
+Copy
+Edit
+git clone https://github.com/MobSF/Mobile-Security-Framework-MobSF.git
+cd Mobile-Security-Framework-MobSF
+./setup.sh
+./run.sh
+Then go to: http://127.0.0.1:8000
+
+🔹 5. Burp Suite
+Already in Kali:
+
+bash
+Copy
+Edit
+burpsuite &
+🔹 6. adb (Android Debug Bridge)
+bash
+Copy
+Edit
+sudo apt install android-tools-adb
+🔹 7. Frida (for runtime hooking)
+bash
+Copy
+Edit
+pip install frida-tools
+🔹 8. Objection
+bash
+Copy
+Edit
+pip install objection
